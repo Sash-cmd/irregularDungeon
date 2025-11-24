@@ -6,4 +6,6 @@ class Joueur {
     int gold;
     int pvMax;
     int pv;
+    Verbe[] livre;
+    String[] inventaire;
 }
