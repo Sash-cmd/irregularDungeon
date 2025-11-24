@@ -12,6 +12,7 @@ class Main extends Program {
     void toString(Monstre m){println("ID: "m.id +" Niveau: "+m.niveau +" PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+COLOR[m.color]);}
 
     Joueur newJoueur(int nbJoueurs, String nom){/*Initialisation du joueur*/ Joueur j = new Joueur();j.id = nbJoueurs;if(length(nom) != 0){j.nom = nom;}j.level = 1;j.xp = 0;j.gold=0;j.pvMax = 3;j.pv = j.pvMax;}
+    Verbe nexVerbe(Strinb fr, String bv, String pr, String pp, int level){/*Initialisation du verbe*/Verbe v = new Verbe();v.fr= fr;v.bv=bv;v.pr=pr;v.pp=pp;v.level=level;return v;} 
     
     //Il faut faire un truc qui change le verbe du monstre (+sa couleur si on veut) si il lui reste des PV.
     //Peut être un type de monstre qui peut en plus changer de couleur.
