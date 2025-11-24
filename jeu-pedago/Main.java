@@ -1,7 +1,10 @@
 class Main extends Program {
-    
+    //VARIABLES GLOBALES 
     final String[] COLORS = new String[]{"Black", "Red", "Green", "Blue", "Yellow", "Cyan", "Purple", "White"};
-
+    final int MONSTRE_PV_RANDOM = 20 // De combien les PVs peuvent varier 
+    final int MONSTRE_PV_BASE = 50 // De +0 à +MONSTRE_PV_RANDOM cette valeur
+    final int MONSTRE_PV_PAR_LEVEL = 30 // De combien les PVs montent par niveau de monstre.
+    
     void algorithm(){}
 
     void toString(Verbe v){println(v.fr +" "+ v.bv +" "+ v.pr +" "+ v.pp +" "+ v.level);}
@@ -18,8 +21,10 @@ class Main extends Program {
         m.id = nbMonstres;
         m.color = color;
         m.verbe = verbe;
-        m.pvMax = 50+20*random()+30*m.verbe.level;        
+        m.pvMax = MONSTRE_PV_BASE + MONSTRE_PV_RANDOM*random() + MONSTRE_PV_PAR_LEVEL*m.verbe.level; // 50-70 PVs de base, +30 à chaque niveau en plus.
         m.pv = pvMax;
+        m.xpGiven = (90+20*random()+*m.verbe.level*((m.color-1)/3))/2; //formule pour l'XP prenant en compte le niveau du verbe, et la couleur du monstre.
+        m.goldGiven = xpGiven/3+25*random();
+        return m;
     }
-
 }   
