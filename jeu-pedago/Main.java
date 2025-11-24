@@ -1,18 +1,18 @@
 class Main extends Program {
     //VARIABLES GLOBALES 
     final String[] COLORS = new String[]{"Black", "Red", "Green", "Blue", "Yellow", "Cyan", "Purple", "White"};
-    final int MONSTRE_PV_RANDOM = 20 // De combien les PVs peuvent varier 
-    final int MONSTRE_PV_BASE = 50 // De +0 à +MONSTRE_PV_RANDOM cette valeur
-    final int MONSTRE_PV_PAR_LEVEL = 30 // De combien les PVs montent par niveau de monstre.
+    final int MONSTRE_PV_RANDOM = 20; // De combien les PVs peuvent varier 
+    final int MONSTRE_PV_BASE = 50; // De +0 à +MONSTRE_PV_RANDOM cette valeur
+    final int MONSTRE_PV_PAR_LEVEL = 30; // De combien les PVs montent par niveau de monstre.
     final int MAX_VERBES = 100;
     final int MAX_ITEMS = 4;
     
     void algorithm(){}
 
     
-    void toString(String[] s){for(int i=0;i<length(s);i++){print(s[i]+"; ";)}println();}
+    void toString(String[] s){for(int i=0;i<length(s);i++){print(s[i]+"; ");}println();}
     void toString(Verbe v){println(v.fr +" "+ v.bv +" "+ v.pr +" "+ v.pp +" "+ v.level);}
-    void toString(Verbe[] v){for(int i=0;i<length(v);i++){print(v[i]+"; ";)}println();}
+    void toString(Verbe[] v){for(int i=0;i<length(v);i++){print(v[i]+"; ");}println();}
     void toString(Joueur j){println("Nom: "+j.nom +" "+"niveau:"+j.level +" "+"xp: "+j.xp +" "+"gold: "+j.gold +" "+"pv: "+j.pv +" "+"id_joueur"+j.id);println();toString(j.livre);toString(j.inventaire);}
     void toString(Monstre m){println("ID: "m.id +" Niveau: "+m.niveau +" PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+COLOR[m.color]);}
 
@@ -51,7 +51,7 @@ class Main extends Program {
     //Il faut faire un truc qui change le verbe du monstre (+sa couleur si on veut) si il lui reste des PV.
     //Peut être un type de monstre qui peut en plus changer de couleur.
     void changeVerb(Monstre m){
-        m.verbe.level;
+        //m.verbe.level;
     }
     
 }   
