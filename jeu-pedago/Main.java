@@ -1,3 +1,6 @@
+import extensions.File;
+import extensions.CSVFile;
+
 class Main extends Program {
     //VARIABLES GLOBALES 
     final String[] COLORS = new String[]{"Black", "Red", "Green", "Blue", "Yellow", "Cyan", "Purple", "White"};
@@ -10,11 +13,11 @@ class Main extends Program {
     void algorithm(){}
 
     
-    void toString(String[] s){for(int i=0;i<length(s);i++){print(s[i]+"; ");}println();}
-    void toString(Verbe v){println(v.fr +" "+ v.bv +" "+ v.pr +" "+ v.pp +" "+ v.level);}
-    void toString(Verbe[] v){for(int i=0;i<length(v);i++){print(v[i]+"; ");}println();}
-    void toString(Joueur j){println("Nom: "+j.nom +" "+"niveau:"+j.level +" "+"xp: "+j.xp +" "+"gold: "+j.gold +" "+"pv: "+j.pv +" "+"id_joueur"+j.id);println();toString(j.livre);toString(j.inventaire);}
-    void toString(Monstre m){println("ID: "m.id +" Niveau: "+m.niveau +" PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+COLOR[m.color]);}
+    String toString(String[] s){String result = "";for(int i=0;i<length(s);i++){result += s[i]+"; ";}result += "\n";return result;}
+    String toString(Verbe v){return v.fr +" "+ v.bv +" "+ v.pr +" "+ v.pp +" "+ v.level;}
+    String toString(Verbe[] v){String result = "";for(int i=0;i<length(v);i++){result += v[i]+"; ";}result += "\n";return result;}
+    String toString(Joueur j){return "Nom: "+j.nom +" "+"niveau:"+j.level +" "+"xp: "+j.xp +" "+"gold: "+j.gold +" "+"pv: "+j.pv +" "+"id_joueur"+j.id +"\n"+toString(j.livre)+toString(j.inventaire);}
+    String toString(Monstre m){return "ID: "+m.id+" PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+" "+COLORS[m.color]+" xpGiven: "+m.xpGiven+" goldGiven: "+m.goldGiven+" VERBE: "+toString(m.verbe);}
 
     Joueur newJoueur(int nbJoueurs, String nom){
         /*Initialisation du joueur*/ Joueur j = new Joueur();
@@ -23,11 +26,11 @@ class Main extends Program {
         j.level = 1;j.xp = 0;
         j.gold=0;j.pvMax = 3;
         j.pv = j.pvMax;
-        j.livre = Verbe[MAX-VERBES];
-        j.inventaire = String[MAX_ITEMS];
+        j.livre = new Verbe[MAX_VERBES];
+        j.inventaire = new String[MAX_ITEMS];
         return j;
     }
-    Verbe nexVerbe(Strinb fr, String bv, String pr, String pp, int level){
+    Verbe newVerbe(String fr, String bv, String pr, String pp, int level){
         /*Initialisation du verbe*/Verbe v = new Verbe();
         v.fr= fr;
         v.bv=bv;
@@ -42,10 +45,10 @@ class Main extends Program {
         m.id = nbMonstres;
         m.color = color;
         m.verbe = verbe;
-        m.pvMax = MONSTRE_PV_BASE + MONSTRE_PV_RANDOM*random() + MONSTRE_PV_PAR_LEVEL*m.verbe.level; // 50-70 PVs de base, +30 à chaque niveau en plus.
-        m.pv = pvMax;
-        m.xpGiven = (90+20*random()+*m.verbe.level*((m.color-1)/3))/2; //formule pour l'XP prenant en compte le niveau du verbe, et la couleur du monstre.
-        m.goldGiven = xpGiven/3+25*random();
+        m.pvMax = MONSTRE_PV_BASE + (int)(MONSTRE_PV_RANDOM*random()) + MONSTRE_PV_PAR_LEVEL*m.verbe.level; // 50-70 PVs de base, +30 à chaque niveau en plus.
+        m.pv = m.pvMax;
+        m.xpGiven = (90+(int)(20*random())+m.verbe.level*((m.color-1)/3))/2; //formule pour l'XP prenant en compte le niveau du verbe, et la couleur du monstre.
+        m.goldGiven = m.xpGiven/3+(int)(25*random());
         return m;
     }
     //Il faut faire un truc qui change le verbe du monstre (+sa couleur si on veut) si il lui reste des PV.
@@ -53,5 +56,7 @@ class Main extends Program {
     void changeVerb(Monstre m){
         //m.verbe.level;
     }
+    
+    //Fonction pour transformer le csv en plusieurs Tableaux de verbes selon les differents niveaux
     
 }   
