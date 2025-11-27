@@ -12,13 +12,17 @@ class Main extends Program {
     
     void algorithm(){}
 
-    
+    //---------------/Fonctions de toString\---------------//
     String toString(String[] s){String result = "";for(int i=0;i<length(s);i++){result += s[i]+"; ";}result += "\n";return result;}
     String toString(Verbe v){return v.fr +" "+ v.bv +" "+ v.pr +" "+ v.pp +" "+ v.level;}
     String toString(Verbe[] v){String result = "";for(int i=0;i<length(v);i++){result += v[i]+"; ";}result += "\n";return result;}
     String toString(Joueur j){return "Nom: "+j.nom +" "+"niveau:"+j.level +" "+"xp: "+j.xp +" "+"gold: "+j.gold +" "+"pv: "+j.pv +" "+"id_joueur"+j.id +"\n"+toString(j.livre)+toString(j.inventaire);}
     String toString(Monstre m){return "ID: "+m.id+" PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+" "+COLORS[m.color]+" xpGiven: "+m.xpGiven+" goldGiven: "+m.goldGiven+" VERBE: "+toString(m.verbe);}
+    //-----------------------------------------------------//
 
+
+    //-------------------/Constructeurs\----------
+    .+---------//
     Joueur newJoueur(int nbJoueurs, String nom){
         /*Initialisation du joueur*/ Joueur j = new Joueur();
         j.id = nbJoueurs;
@@ -51,6 +55,8 @@ class Main extends Program {
         m.goldGiven = m.xpGiven/3+(int)(25*random());
         return m;
     }
+    //-----------------------------------------------------//
+    
     //Il faut faire un truc qui change le verbe du monstre (+sa couleur si on veut) si il lui reste des PV.
     //Peut être un type de monstre qui peut en plus changer de couleur.
     void changeVerb(Monstre m){
