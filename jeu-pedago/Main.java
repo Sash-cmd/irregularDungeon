@@ -58,5 +58,13 @@ class Main extends Program {
     }
     
     //Fonction pour transformer le csv en plusieurs Tableaux de verbes selon les differents niveaux
+
+    //---------------/Fonctions de CSV\---------------//
+
+    //Fonction pour ouvrir un csv (Verbes)
+
+    //Fonction pour Ouvrir un csv (Sauvegarde)
+
+    //Fonction pour Sauvegarder l'état des joueurs actuels (Joueur courant + autrs joueurs => save(String[][], sauvegardes.csv)
     
 }   
