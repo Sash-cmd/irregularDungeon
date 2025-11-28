@@ -66,6 +66,14 @@ class Main extends Program {
     //Fonction pour transformer le csv en plusieurs Tableaux de verbes selon les differents niveaux
 
     //Fonction d'ériture pour avoir les caractères print les uns après les autres comme dans un RPG
+
+    //Fonction d'ajout d'item à l'inventaire
+
+    //Fonction pour Enlever des items à l'inventaire
+
+    //Fonction pour avoir les infos sur les items
+
+    
  
     //---------------/Fonctions de CSV\---------------//
 
