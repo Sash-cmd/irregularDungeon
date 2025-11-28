@@ -21,8 +21,7 @@ class Main extends Program {
     //-----------------------------------------------------//
 
 
-    //-------------------/Constructeurs\----------
-    .+---------//
+    //-------------------/Constructeurs\-------------------//
     Joueur newJoueur(int nbJoueurs, String nom){
         /*Initialisation du joueur*/ Joueur j = new Joueur();
         j.id = nbJoueurs;
@@ -73,14 +72,28 @@ class Main extends Program {
 
     //Fonction pour avoir les infos sur les items
 
+    //Fon
     
  
-    //---------------/Fonctions de CSV\---------------//
+    //-----------------/Fonctions de CSV\------------------//
 
-    //Fonction pour ouvrir un csv (Verbes)
+    //Fonction pour avoir la taille d'un csv
 
-    //Fonction pour Ouvrir un csv (Sauvegarde)
+    //Fonction pour enregistrer les verbes d'un csv en tableau
 
-    //Fonction pour Sauvegarder l'état des joueurs actuels (Joueur courant + autrs joueurs => save(String[][], sauvegardes.csv)
+    //Fonction pour lire le fichier de sauvegarde csv
+
+    //Fonction pour sauvegarder dans le fichier de sauvegarde le joueur actuel (Joueur courant + autrs joueurs => save(String[][], sauvegardes.csv)
+    
+    //-----------------------------------------------------//
+
+    //-----------------/Fonctions de .txt\-----------------//
+
+    //Fonction lecture de Sprites + stockage dans un string
+
+    //Fonction d'affichage de Sprites
+    
+    //-----------------------------------------------------//
+
     
 }   
