@@ -9,6 +9,7 @@ class Main extends Program {
     final int MONSTRE_PV_PAR_LEVEL = 30; // De combien les PVs montent par niveau de monstre.
     final int MAX_VERBES = 100;
     final int MAX_ITEMS = 4;
+    Joueur joueurActuel;
     
     void algorithm(){}
 
