@@ -4,10 +4,11 @@ class Item{
     String description;
     /*
     ID des items :
-    0 => petite pottion de soin
-    1 => grande potion de soin
-    2 => petit potion de QI
-    3 => grande potion de QI
+    0 => rien, pour savoir si tu a rien dans le csv
+    1 => petite pottion de soin
+    2 => grande potion de soin
+    3 => petit potion de QI
+    4 => grande potion de QI
     MAX 9 
     */
 

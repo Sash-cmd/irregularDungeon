@@ -1,5 +1,4 @@
 class Joueur {
-    int id;
     String nom;
     int level;
     int xp;
