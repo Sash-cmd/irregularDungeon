@@ -17,11 +17,8 @@ class Main extends Program {
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
     
     void algorithm(){
-        print("Quel nb de fichier afficher ? ");
-        int input = readInt();
-        println();
-        SetUpGame(input);
-        afficherSauvegarde(input);
+        SetUpGame(2);
+        println(toString(joueurActuel));
     }
 
     void SetUpGame(int numSauvegarde){
@@ -211,6 +208,13 @@ class Main extends Program {
         n[2] = charAt(numbers,2)-'0';
         n[3] = charAt(numbers,3)-'0';
         return n;
+    }
+    void test_numberItemIntoIntTab(){
+        int[] n = new int[]{1,2,3,4};
+        assertTrue(n[0]==numberItemIntoIntTab("1234")[0]);
+        assertTrue(n[1]==numberItemIntoIntTab("1234")[1]);
+        assertTrue(n[2]==numberItemIntoIntTab("1234")[2]);
+        assertTrue(n[3]==numberItemIntoIntTab("1234")[3]);
     }
     
 
