@@ -1,5 +1,4 @@
 class Joueur {
-    int id;
     String nom;
     int level;
     int xp;
@@ -7,5 +6,5 @@ class Joueur {
     int pvMax;
     int pv;
     Verbe[] livre;
-    String[] inventaire;
+    Item[] inventaire;
 }

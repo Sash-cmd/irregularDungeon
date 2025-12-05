@@ -1,0 +1,11 @@
+Plan du jeu qui devrait etre pret pour l'Alpha (le minimum):
+
+-Fight de monstre, selon leur couleur, nos verbes dispos, et le niveau attendu
+-Choix pendant le fight, entre combattre, utiliser item, ou bien fuir.
+-Generation de couloir, donc le couloir avec la suite de monstres/salle au trésors que l'on va pouvoir y trouver
+  exemple : [monstre, monstre, trésors, monstre, fin + trésors]
+
+Si on a un peu plus de temps (normalement large) :
+-Déplacement entre academie et donjon
+-Achat de verbes et objets
+-Prendre en compte les niveaux, l'xp et le gold du joueur
