@@ -10,16 +10,22 @@ class Main extends Program {
     final int MAX_VERBES = 100;
     final int MAX_ITEMS = 4;
     final int PV_MAX_JOUEUR = 3;
+    final int CHANCE_SUR_X = 4; //chance sur x de tomber sur un coffre et non un monstre.
     final Verbe[] ALL_VERBES = allVerbes("verbes.csv");
     final Item[] ALL_ITEMS = allItems("items.csv");
     Joueur[] sauvegardes = readSauvegardes("sauvegardes.csv");
     Joueur joueurActuel;
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
     
+
+
     void algorithm(){
         SetUpGame(2);
-        println(toString(joueurActuel));
+        Monstre[] floor = generateFloor(1);
+        println(toString(floor));
     }
+
+
 
     void SetUpGame(int numSauvegarde){
         joueurActuel = sauvegardes[numSauvegarde];
@@ -35,9 +41,11 @@ class Main extends Program {
     String toString(Verbe v){return "ID: "+v.id +" "+v.fr +" "+ v.bv +" "+ v.pr +" "+ v.pp +" lv"+ v.level;}
     String toString(Verbe[] v){String result = "";for(int i=0;i<length(v);i++){result += toString(v[i])+";\n";}return result;}
     String toString(Joueur j){return "Nom:"+j.nom +" "+"niveau:"+j.level +" "+"xp:"+j.xp +" "+"gold:"+j.gold +" "+"pv:"+j.pv +"\n\nVerbes :\n"+toString(j.livre)+"\nItems :\n"+toString(j.inventaire);}
-    String toString(Monstre m){return "ID: "+m.id+" PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+" "+COLORS[m.color]+" xpGiven: "+m.xpGiven+" goldGiven: "+m.goldGiven+" VERBE: "+toString(m.verbe);}
+    String toString(Monstre m){return "PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+" "+COLORS[m.color]+" xpGiven: "+m.xpGiven+" goldGiven: "+m.goldGiven+" VERBE: "+toString(m.verbe);}
+    String toString(Monstre[] f){String res="";for(int i=0;i<length(f);i++){res+=toString(f[i])+";\n";}return res;}
     String toString(Item i){return "ID: "+i.id+" Nom: "+i.nom+" Description: "+i.description;}
     String toString(Item[] inv){String result="";for(int i=0;i<length(inv);i++){result+=toString(inv[i])+";\n";}return result;}
+    //SString toString(){return "None";}
     //-----------------------------------------------------//
 
     //-----------------/Fonctions de print\----------------//
@@ -67,10 +75,9 @@ class Main extends Program {
         v.level=level;
         return v;
     }
-    Monstre newMonstre(int nbMonstres, int color, Verbe verbe){
+    Monstre newMonstre(int color, Verbe verbe){
         /*Initialisation du monstre*/
         Monstre m = new Monstre();
-        m.id = nbMonstres;
         m.color = color;
         m.verbe = verbe;
         m.pvMax = MONSTRE_PV_BASE + (int)(MONSTRE_PV_RANDOM*random()) + MONSTRE_PV_PAR_LEVEL*m.verbe.level; // 50-70 PVs de base, +30 à chaque niveau en plus.
@@ -85,7 +92,7 @@ class Main extends Program {
         i.nom = nom;
         i.description = description;
         return i;
-    }
+    }   
     //-----------------------------------------------------//
     
     //Il faut faire un truc qui change le verbe du monstre (+sa couleur si on veut) si il lui reste des PV.
@@ -104,9 +111,80 @@ class Main extends Program {
 
     //Fonction pour avoir les infos sur les items
 
-    //Fon
-    
- 
+
+
+    //---------------/Fonctions de Donjon\-----------------//
+    Monstre[] generateFloor(int level){
+        int size = (level*2)+(level/2)+1;
+        Monstre[] floor = new Monstre[size];
+        for(int i=0; i<size; i++){
+            floor[i] = generateMonstre(level);
+        }
+        return floor;
+    }
+
+    Monstre generateMonstre(int level){
+        if(level == 1){
+            int color = random(1,3);//trois couleurs primaires
+            return newMonstre(color, generateVerbe(level));
+        }else if(level == 2){
+            int color = random(0,3);//précédents + blanc
+            return newMonstre(color, generateVerbe(level));
+        }else if(level == 3){
+            int color = random(0,6);//précédents + couleurs secondaires
+            return newMonstre(color, generateVerbe(level));
+        }else{
+            int color = random(0,7);//précédents + noir (toutes les couleurs)
+            return newMonstre(color, generateVerbe(level));
+        }
+    }
+    void test_generateMonstre(){
+        SetUpGame(2);
+        Monstre m = generateMonstre(1);
+        println(toString(m));
+    }
+
+    Verbe generateVerbe(int level){
+        int size = length(joueurActuel.livre);
+        int[] allId = new int[size];
+        int indiceTemp = 0;
+        for(int i=0; i<size; i++){
+            if(joueurActuel.livre[i].level == level){
+                allId[indiceTemp] = joueurActuel.livre[i].id;
+                indiceTemp += 1;
+            }
+        }
+        int resultId = allId[random(0,size-1)];
+        return ALL_VERBES[resultId];
+    }
+    void test_generateVerbe(){
+        SetUpGame(2);
+        Verbe verbeG = generateVerbe(1);
+        println(toString(verbeG));
+    }
+    //-----------------------------------------------------//
+
+    //---------------/Fonctions de Combat\-----------------//
+
+    void damageMonstre(Monstre monstre, int damage){
+        monstre.pv = monstre.pv - damage;
+        if(monstre.pv < 0){
+            monstre.pv = 0;
+        }
+    }
+    void damageJoueur(){
+        joueurActuel.pv = joueurActuel.pv - 1;
+        if(joueurActuel.pv == 0){
+            //deathJoueur();
+        }
+    }
+    void healJoueur(){
+        if(joueurActuel.pv < joueurActuel.pvMax){
+            joueurActuel.pv += 1;
+        }
+    }
+    //-----------------------------------------------------//
+
     //-----------------/Fonctions de CSV\------------------//
 
     //Fonctions pour lire le fichier de sauvegarde csv
