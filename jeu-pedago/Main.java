@@ -10,34 +10,114 @@ class Main extends Program {
     final int MAX_VERBES = 100;
     final int MAX_ITEMS = 4;
     final int PV_MAX_JOUEUR = 3;
+    final int CHANCE_SUR_X = 4; //chance sur x de tomber sur un coffre et non un monstre.
     final Verbe[] ALL_VERBES = allVerbes("verbes.csv");
     final Item[] ALL_ITEMS = allItems("items.csv");
     Joueur[] sauvegardes = readSauvegardes("sauvegardes.csv");
     Joueur joueurActuel;
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
-    
-    void algorithm(){
-        SetUpGame(2);
-        println(toString(joueurActuel));
-    }
+    final String CLEAR_TERM = "\033[H\033[2J";
 
+
+    void algorithm(){
+        print(CLEAR_TERM);
+        afficherTxt("txt.txt");
+        println("VERSION BETA 0.2\n");
+        println("Quelle sauvergarde voulez vous charger ?\n0- Quitter le jeu");
+        println(toStringLittle(sauvegardes));
+        String input = readInput();
+        SetUpGame(intFromString(input));
+        while(!equals(input,"0")){ 
+            println("Que voulez vous faire ?\n");
+            println("0: Quitter le Jeu");
+            println("1: consulter inventaire");
+            println("2: consulter les verbes");
+            println("3: parcourir un donjon de niveau 1");
+            println("\n"+toStringLittle(joueurActuel));
+            input = readInput();
+            if(equals(input, "1")){
+
+            }else if(equals(input,"2")){
+
+            }else if(equals(input,"3")){
+                Monstre[] floor = generateFloor(1);
+                boolean alive = true;
+                for(int i = 0; i<length(floor); i++){
+                    if(alive && fightMonstre(floor[i])){
+                        println("Bravo ! Le monstre à été vaincu");
+                    }else{
+                        alive = false;
+                    }
+                }
+                if(!alive){
+                    println("Aie ! vous avez perdu !, vous vous soignez et vous remetez en route...\n");
+                    joueurActuel.pv = joueurActuel.pvMax;
+                }else{
+                    println("Bien joué, vous avez triomphé(e) du Donjon !\nMerci d'avoir joué à l'alpha\n");
+                }
+
+            }
+
+        }
+    }
+    
     void SetUpGame(int numSauvegarde){
         joueurActuel = sauvegardes[numSauvegarde];
         positionJoueur = "Main Menu";
+
     }
 
-    String readInput(){
-        return readString();
+    void afficherTxt(String file){
+        File f = newFile(file);
+        while(ready(f)){
+            println(readLine(f));
+        }
+    }
+
+    String readInput(){print(">>>");return readInput(readString());}
+    String readInput(String txt){
+        String res = toLowerCase(txt);
+        String newRes = "";
+        for(int i = 0; i < length(res); i++){
+            if(charAt(res, i)!='\n' && charAt(res, i)!=' '){
+                newRes += charAt(res,i);
+            }
+        }
+        return newRes;
+    }
+    void test_readInput(){
+        assertEquals("",readInput(""));
+        assertEquals("abc",readInput("abc"));
+        assertEquals("abc",readInput("a b c "));
+        assertEquals("abc",readInput("ABC"));
+        assertEquals("abc",readInput("a b\n C"));
+        assertEquals("123",readInput("1 2 3"));
     }
 
     //---------------/Fonctions de toString\---------------//
-    String toString(String[] s){String result = "";for(int i=0;i<length(s);i++){result += s[i]+"; ";}result += "\n";return result;}
-    String toString(Verbe v){return "ID: "+v.id +" "+v.fr +" "+ v.bv +" "+ v.pr +" "+ v.pp +" lv"+ v.level;}
-    String toString(Verbe[] v){String result = "";for(int i=0;i<length(v);i++){result += toString(v[i])+";\n";}return result;}
-    String toString(Joueur j){return "Nom:"+j.nom +" "+"niveau:"+j.level +" "+"xp:"+j.xp +" "+"gold:"+j.gold +" "+"pv:"+j.pv +"\n\nVerbes :\n"+toString(j.livre)+"\nItems :\n"+toString(j.inventaire);}
-    String toString(Monstre m){return "ID: "+m.id+" PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+" "+COLORS[m.color]+" xpGiven: "+m.xpGiven+" goldGiven: "+m.goldGiven+" VERBE: "+toString(m.verbe);}
-    String toString(Item i){return "ID: "+i.id+" Nom: "+i.nom+" Description: "+i.description;}
-    String toString(Item[] inv){String result="";for(int i=0;i<length(inv);i++){result+=toString(inv[i])+";\n";}return result;}
+    String toString(String[] s) {String result = "";for(int i=0;i<length(s);i++){result += s[i]+"; ";}result += "\n";return result;}
+    String toString(Verbe v)    {return "ID: "+v.id +" "+v.fr +" "+ v.bv +" "+ v.pr +" "+ v.pp +" lv"+ v.level;}
+    String toString(Verbe[] v)  {String result = "";for(int i=0;i<length(v);i++){result += toString(v[i])+";\n";}return result;}
+    String toString(Joueur j)   {return "Nom:"+j.nom +" "+"niveau:"+j.level +" "+"xp:"+j.xp +" "+"gold:"+j.gold +" "+"pv:"+j.pv +"\n\nVerbes :\n"+toString(j.livre)+"\nItems :\n"+toString(j.inventaire);}
+    String toString(Joueur[] s) {String res = "";for(int i=1;i<length(s);i++){res+= toString(s[i])+"\n";}return res;}
+    String toString(Monstre m)  {return "PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+" "+COLORS[m.color]+" xpGiven: "+m.xpGiven+" goldGiven: "+m.goldGiven+" VERBE: "+toString(m.verbe);}
+    String toString(Monstre[] f){String res="";for(int i=0;i<length(f);i++){res+=toString(f[i])+";\n";}return res;}
+    String toString(Item i)     {return "ID: "+i.id+" Nom: "+i.nom+" Description: "+i.description;}
+    String toString(Item[] inv) {String result="";for(int i=0;i<length(inv);i++){result+=toString(inv[i])+";\n";}return result;}
+    
+    String toStringLittle(Joueur j){
+        return "Nom:"+j.nom +" "+" -niveau:"+j.level +" "+" -xp:"+j.xp +" "+" -gold:"+j.gold +" "+" -pv:"+j.pv +"/"+j.pvMax;
+    }
+    String toStringLittle(Joueur[] sauvegarde){
+        String res = "";
+        for(int i = 1; i<length(sauvegarde);i++){
+            res += i+"- "+toStringLittle(sauvegarde[i])+"\n";
+        }
+        return res;
+    }
+    String toStringFight(Monstre m){
+        return "Monstre de couleur "+COLORS[m.color]+" "+m.pv+"/"+m.pvMax;
+    }
     //-----------------------------------------------------//
 
     //-----------------/Fonctions de print\----------------//
@@ -67,10 +147,9 @@ class Main extends Program {
         v.level=level;
         return v;
     }
-    Monstre newMonstre(int nbMonstres, int color, Verbe verbe){
+    Monstre newMonstre(int color, Verbe verbe){
         /*Initialisation du monstre*/
         Monstre m = new Monstre();
-        m.id = nbMonstres;
         m.color = color;
         m.verbe = verbe;
         m.pvMax = MONSTRE_PV_BASE + (int)(MONSTRE_PV_RANDOM*random()) + MONSTRE_PV_PAR_LEVEL*m.verbe.level; // 50-70 PVs de base, +30 à chaque niveau en plus.
@@ -85,28 +164,180 @@ class Main extends Program {
         i.nom = nom;
         i.description = description;
         return i;
-    }
+    }   
     //-----------------------------------------------------//
     
+
+    
+    //-----------------/Fonctions de combat\---------------//
+
+    boolean fightMonstre(Monstre m){
+        println("Un monstre se dresse devant vous !\n");
+        while(m.pv > 0 && joueurActuel.pv > 0){
+            println(toStringFight(m));
+            if(!askQuestion(m.verbe, m.color)){
+                //mauvaise réponse
+                damageJoueur();
+            }else{
+                //bonne réponse
+                damageMonstre(m, 40 + random(1,5));
+                changeVerb(m,1);
+            }
+        }
+        if(joueurActuel.pv == 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    boolean askQuestion(Verbe v, int color){
+        // retourne true si bonne réponse, false sinon.
+
+        //définition de quels mots sont visibles:
+        boolean[] affiche = new boolean[]{true, true, true, true};
+        if(color == 0){affiche[0] = false;}
+        if(color == 1 || color == 4 || color == 6 || color == 7){affiche[1] = false;}
+        if(color == 2 || color == 4 || color == 5 || color == 7){affiche[2] = false;}
+        if(color == 3 || color == 6 || color == 5 || color == 7){affiche[3] = false;}
+
+        //print de la question
+        if(affiche[0]){print(v.fr+" ; ");}else{print(" ______ ; ");}
+        if(affiche[1]){print(v.bv+" ; ");}else{print(" ______ ; ");}
+        if(affiche[2]){print(v.pr+" ; ");}else{print(" ______ ; ");}
+        if(affiche[3]){println(v.pp);}else{println(" ______");}
+        println("\nQuel est le verbe manquant ?");
+        println("\n"+toStringLittle(joueurActuel));
+
+        //definition 
+        String reponse = readInput();
+        int nbReponses = (color-1) / 3 + 1;
+    
+        if(color == 0){                                          if(equals(reponse,v.fr)){return true;}else{return false;}}
+
+        if(color == 1 || color == 4 || color == 6 || color == 7){if(equals(reponse,v.bv)){return true;}else{return false;}}
+        if(color == 2 || color == 4 || color == 5 || color == 7){if(equals(reponse,v.pr)){return true;}else{return false;}}
+        if(color == 3 || color == 6 || color == 5 || color == 7){if(equals(reponse,v.pp)){return true;}else{return false;}}
+        
+        return false;
+    }
+
     //Il faut faire un truc qui change le verbe du monstre (+sa couleur si on veut) si il lui reste des PV.
     //Peut être un type de monstre qui peut en plus changer de couleur.
-    void changeVerb(Monstre m){
-        //m.verbe.level;
+    void changeVerb(Monstre m, int level){
+        m.verbe = generateVerbe(1);
     }
     
+
+    //-----------------------------------------------------//
+
     //Fonction pour transformer le csv en plusieurs Tableaux de verbes selon les differents niveaux
 
     //Fonction d'ériture pour avoir les caractères print les uns après les autres comme dans un RPG
 
     //Fonction d'ajout d'item à l'inventaire
+    int disponible(Joueur j){
+        for(int i = 0; i<length(j.inventaire);i++){
+            if(j.inventaire[i].id==0){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    String ajout_item(Item i){
+        int disp = disponible(joueurActuel);
+        if(disp<0){
+            return "Vous n'avez pas la place dans votre inventaire !";
+        }else{
+            joueurActuel.inventaire[disp] = i;
+            return i.nom + "à bien été ajouté à votre inventaire !";
+        }
+    }
 
     //Fonction pour Enlever des items à l'inventaire
 
-    //Fonction pour avoir les infos sur les items
+    String retirer_item(){return "";}
 
-    //Fon
-    
- 
+    //Fonction pour avoir les infos sur les items
+    String descItem(Item i){
+        return i.nom + ": " +i.description;
+    }
+
+    //---------------/Fonctions de Donjon\-----------------//
+    Monstre[] generateFloor(int level){
+        int size = (level*2)+(level/2)+1;
+        Monstre[] floor = new Monstre[size];
+        for(int i=0; i<size; i++){
+            floor[i] = generateMonstre(level);
+        }
+        return floor;
+    }
+
+    Monstre generateMonstre(int level){
+        if(level == 1){
+            int color = random(1,3);//trois couleurs primaires
+            return newMonstre(color, generateVerbe(level));
+        }else if(level == 2){
+            int color = random(0,3);//précédents + blanc
+            return newMonstre(color, generateVerbe(level));
+        }else if(level == 3){
+            int color = random(0,6);//précédents + couleurs secondaires
+            return newMonstre(color, generateVerbe(level));
+        }else{
+            int color = random(0,7);//précédents + noir (toutes les couleurs)
+            return newMonstre(color, generateVerbe(level));
+        }
+    }
+    void test_generateMonstre(){
+        SetUpGame(2);
+        Monstre m = generateMonstre(1);
+        println(toString(m));
+    }
+
+    Verbe generateVerbe(int level){
+        int size = length(joueurActuel.livre);
+        int[] allId = new int[size];
+        int indiceTemp = 0;
+        for(int i=0; i<size; i++){
+            if(joueurActuel.livre[i].level == level){
+                allId[indiceTemp] = joueurActuel.livre[i].id;
+                indiceTemp += 1;
+            }
+        }
+        int resultId = allId[random(0,size-1)];
+        return ALL_VERBES[resultId];
+    }
+    void test_generateVerbe(){
+        SetUpGame(2);
+        Verbe verbeG = generateVerbe(1);
+        println(toString(verbeG));
+    }
+    //-----------------------------------------------------//
+
+    //---------------/Fonctions de Combat\-----------------//
+
+    void damageMonstre(Monstre monstre, int damage){
+        monstre.pv = monstre.pv - damage;
+        if(monstre.pv < 0){
+            monstre.pv = 0;
+        }
+        println("BAM !\n");
+    }
+    void damageJoueur(){
+        joueurActuel.pv = joueurActuel.pv - 1;
+        if(joueurActuel.pv == 0){
+            //deathJoueur();
+        }
+        println("OUCH !\n");
+    }
+    void healJoueur(){
+        if(joueurActuel.pv < joueurActuel.pvMax){
+            joueurActuel.pv += 1;
+        }
+    }
+    //-----------------------------------------------------//
+
     //-----------------/Fonctions de CSV\------------------//
 
     //Fonctions pour lire le fichier de sauvegarde csv
