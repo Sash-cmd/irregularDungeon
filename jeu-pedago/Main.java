@@ -237,6 +237,11 @@ class Main extends Program {
     int temps(int vitesse){
         return 1000-vitesse;
     }
+    void sleep(int temps){
+        long get = getTime();
+        while(getTime()-get<temps){ 
+        }
+    }
 
     void Timed_print(String texte, int vitesse){
         for(int i = 0; i<length(texte); i++){
@@ -276,6 +281,7 @@ class Main extends Program {
             joueurActuel.inventaire[disp] = newItem(0, "vide", "emplacement vide");
             return i.nom + "à bien été retiré de votre inventaire !";
             }
+    }
     //Fonction pour avoir les infos sur les items
     String descItem(Item i){
         return i.nom + ": " +i.description;
