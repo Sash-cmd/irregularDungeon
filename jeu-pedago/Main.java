@@ -234,11 +234,22 @@ class Main extends Program {
     //Fonction pour transformer le csv en plusieurs Tableaux de verbes selon les differents niveaux
 
     //Fonction d'ériture pour avoir les caractères print les uns après les autres comme dans un RPG
+    int temps(int vitesse){
+        return 1000-vitesse;
+    }
+
+    void Timed_print(String texte, int vitesse){
+        for(int i = 0; i<length(texte); i++){
+            print(charAt(texte,i));
+            sleep(vitesse);
+        }
+        println("");
+    }
 
     //Fonction d'ajout d'item à l'inventaire
-    int disponible(Joueur j){
+    int disponible(Joueur j, int id){
         for(int i = 0; i<length(j.inventaire);i++){
-            if(j.inventaire[i].id==0){
+            if(j.inventaire[i].id==id){
                 return i;
             }
         }
@@ -246,7 +257,7 @@ class Main extends Program {
     }
 
     String ajout_item(Item i){
-        int disp = disponible(joueurActuel);
+        int disp = disponible(joueurActuel, 0);
         if(disp<0){
             return "Vous n'avez pas la place dans votre inventaire !";
         }else{
@@ -257,8 +268,14 @@ class Main extends Program {
 
     //Fonction pour Enlever des items à l'inventaire
 
-    String retirer_item(){return "";}
-
+    String retirer_item(Item i){
+        if(disponible(joueurActuel, i.id)<0){
+            return "Vous n'avez pas cet item dans votre inventaire !";
+            }else{
+            int disp = disponible(joueurActuel, i.id);
+            joueurActuel.inventaire[disp] = newItem(0, "vide", "emplacement vide");
+            return i.nom + "à bien été retiré de votre inventaire !";
+            }
     //Fonction pour avoir les infos sur les items
     String descItem(Item i){
         return i.nom + ": " +i.description;
