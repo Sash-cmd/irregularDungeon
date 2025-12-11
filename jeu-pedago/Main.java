@@ -16,16 +16,19 @@ class Main extends Program {
     Joueur[] sauvegardes = readSauvegardes("sauvegardes.csv");
     Joueur joueurActuel;
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
-    final String CLEAR_TERM = "\033[H\033[2J";
-
+    final String CLEAR_TERM = "\033[H\033[2J"; //Propriété de Lowan-Houte incorcporated
 
     void algorithm(){
         print(CLEAR_TERM);
         afficherTxt("txt.txt");
         println("VERSION BETA 0.2\n");
-        println("Quelle sauvergarde voulez vous charger ?\n0- Quitter le jeu");
-        println(toStringLittle(sauvegardes));
-        String input = readInput();
+        String input;
+        do{
+            println("Quelle sauvergarde voulez vous charger ?\n0- Quitter le jeu");
+            println(toStringLittle(sauvegardes));
+            input = readInput();
+            if(equals(input,"0")){return;}
+        }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
         SetUpGame(intFromString(input));
         while(!equals(input,"0")){ 
             println("Que voulez vous faire ?\n");
@@ -36,25 +39,15 @@ class Main extends Program {
             println("\n"+toStringLittle(joueurActuel));
             input = readInput();
             if(equals(input, "1")){
-
+                println(toString(joueurActuel.inventaire));
+                println("Appuyez sur entrer pour continuer");
+                readString();
             }else if(equals(input,"2")){
-
+                afficherGrimmoire();
+                println("Appuyez sur entrer pour continuer");
+                readString();
             }else if(equals(input,"3")){
-                Monstre[] floor = generateFloor(1);
-                boolean alive = true;
-                for(int i = 0; i<length(floor); i++){
-                    if(alive && fightMonstre(floor[i])){
-                        println("Bravo ! Le monstre à été vaincu");
-                    }else{
-                        alive = false;
-                    }
-                }
-                if(!alive){
-                    println("Aie ! vous avez perdu !, vous vous soignez et vous remetez en route...\n");
-                    joueurActuel.pv = joueurActuel.pvMax;
-                }else{
-                    println("Bien joué, vous avez triomphé(e) du Donjon !\nMerci d'avoir joué à l'alpha\n");
-                }
+                parcourirDonjon(1);
 
             }
 
@@ -66,14 +59,13 @@ class Main extends Program {
         positionJoueur = "Main Menu";
 
     }
-
     void afficherTxt(String file){
         File f = newFile(file);
         while(ready(f)){
             println(readLine(f));
         }
     }
-
+    
     String readInput(){print(">>>");return readInput(readString());}
     String readInput(String txt){
         String res = toLowerCase(txt);
@@ -106,7 +98,11 @@ class Main extends Program {
     String toString(Item[] inv) {String result="";for(int i=0;i<length(inv);i++){result+=toString(inv[i])+";\n";}return result;}
     
     String toStringLittle(Joueur j){
-        return "Nom:"+j.nom +" "+" -niveau:"+j.level +" "+" -xp:"+j.xp +" "+" -gold:"+j.gold +" "+" -pv:"+j.pv +"/"+j.pvMax;
+        if(equals(j.nom,"Vide")){return "Vide";}
+        if(length(j.nom) < 14){
+            return j.nom+"\t\t-niveau:"+j.level+"\txp:"+j.xp+"\tgold:"+j.gold+"\tpv:"+j.pv+"/"+j.pvMax+"PV";
+        }
+        return j.nom+"\t-niveau:"+j.level+"\txp:"+j.xp+"\tgold:"+j.gold+"\tpv:"+j.pv+"/"+j.pvMax+"PV";
     }
     String toStringLittle(Joueur[] sauvegarde){
         String res = "";
@@ -118,11 +114,27 @@ class Main extends Program {
     String toStringFight(Monstre m){
         return "Monstre de couleur "+COLORS[m.color]+" "+m.pv+"/"+m.pvMax;
     }
+    String toStringLittle(Verbe v){
+        return "Niveau: "+v.level+" -"+v.fr+"\t\t--"+v.bv+"\t-"+v.pr+"\t-"+v.pp;
+    }
+    String toStringLittle(Verbe[] v){
+        String res = "Voici le contenu de votre grimmoire :\n\n";
+        for(int i = 0;i<length(v);i++){
+            res += toStringLittle(v[i])+"\n";
+        }
+        return res;
+    }
     //-----------------------------------------------------//
 
     //-----------------/Fonctions de print\----------------//
-    void afficherSauvegarde(int numSauvegarde){println(toString(sauvegardes[numSauvegarde]));}
-    
+    void afficherSauvegarde(int numSauvegarde){
+        println(toString(sauvegardes[numSauvegarde]));
+    }
+
+    //Faire des pages et pouvoir switch entre les pages, car sinon avec trop de verbes ce sera illisible 
+    void afficherGrimmoire(){
+        println(CLEAR_TERM+toStringLittle(joueurActuel.livre));
+    }
 
     //-----------------------------------------------------//
 
@@ -167,8 +179,39 @@ class Main extends Program {
     }   
     //-----------------------------------------------------//
     
+    //Fonction pour transformer le csv en plusieurs Tableaux de verbes selon les differents niveaux
 
-    
+    //Fonction d'ériture pour avoir les caractères print les uns après les autres comme dans un RPG
+
+    //Fonction d'ajout d'item à l'inventaire
+    int disponible(Joueur j){
+        for(int i = 0; i<length(j.inventaire);i++){
+            if(j.inventaire[i].id==0){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    String ajout_item(Item i){
+        int disp = disponible(joueurActuel);
+        if(disp<0){
+            return "Vous n'avez pas la place dans votre inventaire !";
+        }else{
+            joueurActuel.inventaire[disp] = i;
+            return i.nom + "à bien été ajouté à votre inventaire !";
+        }
+    }
+
+    //Fonction pour Enlever des items à l'inventaire
+
+    String retirer_item(){return "";}
+
+    //Fonction pour avoir les infos sur les items
+    String descItem(Item i){
+        return i.nom + ": " +i.description;
+    }
+
     //-----------------/Fonctions de combat\---------------//
 
     boolean fightMonstre(Monstre m){
@@ -231,40 +274,26 @@ class Main extends Program {
 
     //-----------------------------------------------------//
 
-    //Fonction pour transformer le csv en plusieurs Tableaux de verbes selon les differents niveaux
+    //---------------/Fonctions de Donjon\-----------------//
 
-    //Fonction d'ériture pour avoir les caractères print les uns après les autres comme dans un RPG
-
-    //Fonction d'ajout d'item à l'inventaire
-    int disponible(Joueur j){
-        for(int i = 0; i<length(j.inventaire);i++){
-            if(j.inventaire[i].id==0){
-                return i;
+    void parcourirDonjon(int niveau){
+        Monstre[] floor = generateFloor(niveau);
+        boolean alive = true;
+        for(int i = 0; i<length(floor); i++){
+            if(alive && fightMonstre(floor[i])){
+                println("Bravo ! Le monstre à été vaincu");
+            }else{
+                alive = false;
             }
         }
-        return -1;
-    }
-
-    String ajout_item(Item i){
-        int disp = disponible(joueurActuel);
-        if(disp<0){
-            return "Vous n'avez pas la place dans votre inventaire !";
+        if(!alive){
+            println("Aie ! vous avez perdu !, vous vous soignez et vous remetez en route...\n");
+            joueurActuel.pv = joueurActuel.pvMax;
         }else{
-            joueurActuel.inventaire[disp] = i;
-            return i.nom + "à bien été ajouté à votre inventaire !";
+            println("Bien joué, vous avez triomphé(e) du Donjon !\nMerci d'avoir joué à l'alpha\n");
         }
     }
 
-    //Fonction pour Enlever des items à l'inventaire
-
-    String retirer_item(){return "";}
-
-    //Fonction pour avoir les infos sur les items
-    String descItem(Item i){
-        return i.nom + ": " +i.description;
-    }
-
-    //---------------/Fonctions de Donjon\-----------------//
     Monstre[] generateFloor(int level){
         int size = (level*2)+(level/2)+1;
         Monstre[] floor = new Monstre[size];
