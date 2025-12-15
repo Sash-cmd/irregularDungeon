@@ -11,10 +11,14 @@ class Main extends Program {
     final int MAX_ITEMS = 4;
     final int PV_MAX_JOUEUR = 3;
     final int CHANCE_SUR_X = 4; //chance sur x de tomber sur un coffre et non un monstre.
+
     final Verbe[] ALL_VERBES = allVerbes("verbes.csv");
     final Item[] ALL_ITEMS = allItems("items.csv");
+    final Item ITEM_VIDE = newItem(0,"Vide","Vous n'avez pas d'objet a cet endroit.");
+
     Joueur[] sauvegardes = readSauvegardes("sauvegardes.csv");
     Joueur joueurActuel;
+
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
     final String CLEAR_TERM = "\033[H\033[2J"; //Propriété de Lowan-Houte incorcporated
 
@@ -111,9 +115,11 @@ class Main extends Program {
         }
         return res;
     }
+
     String toStringFight(Monstre m){
         return "Monstre de couleur "+COLORS[m.color]+" "+m.pv+"/"+m.pvMax;
     }
+
     String toStringLittle(Verbe v){
         return "Niveau: "+v.level+" -"+v.fr+"\t\t--"+v.bv+"\t-"+v.pr+"\t-"+v.pp;
     }
@@ -121,6 +127,14 @@ class Main extends Program {
         String res = "Voici le contenu de votre grimmoire :\n\n";
         for(int i = 0;i<length(v);i++){
             res += toStringLittle(v[i])+"\n";
+        }
+        return res;
+    }
+
+    String toStringLittle(Item[] inv){
+        String res = "Voici le contenu de votre inventaire :\n\n";
+        for(int i = 0;i<length(inv);i++){
+            res += i+1 + "1) " + inv[i].nom + "\n";
         }
         return res;
     }
@@ -134,6 +148,19 @@ class Main extends Program {
     //Faire des pages et pouvoir switch entre les pages, car sinon avec trop de verbes ce sera illisible 
     void afficherGrimmoire(){
         println(CLEAR_TERM+toStringLittle(joueurActuel.livre));
+    }
+
+    void afficherInventaire(){
+        println(CLEAR_TERM+toStringLittle(joueurActuel.inventaire));
+    }
+
+    void afficherTutoriel(){
+        println("Bienvenue dans Irregular Dungeon ! \n\n"+
+                "Dans ce monde, vous devez vous battre contre des monstre, mais avec des verbes irréguliers en anglais !\n"+
+                "Il y a plusieurs types de monstre: les monstres rouges vous nécéssiterat de rentrer uniquement la base verbale du verbe pour le battre,\n"+
+                "tandis que les verts, eux, vous demanderons le prétérit, et enfin les bleus vous demanderons de donner le participe passé du verbe.\n"+
+                "Il y a à votre disposition une académie de magie dans laquelle vous pourrez acheter des verbes pour progresser,\n"+
+                "mais aussi des Items pour vous aider !\n");
     }
 
     //-----------------------------------------------------//
@@ -183,34 +210,54 @@ class Main extends Program {
 
     //Fonction d'ériture pour avoir les caractères print les uns après les autres comme dans un RPG
 
+    //------------------/Fonctions d'items\----------------//
+
+    void rangerInventaire(){
+
+    }
+
     //Fonction d'ajout d'item à l'inventaire
-    int disponible(Joueur j){
+    int disponible(Joueur j, int id){
         for(int i = 0; i<length(j.inventaire);i++){
-            if(j.inventaire[i].id==0){
+            if(j.inventaire[i].id==id){
                 return i;
             }
         }
         return -1;
     }
+    int emplacementVide(Joueur j){
+        return disponible(j,0);
+    }
 
-    String ajout_item(Item i){
-        int disp = disponible(joueurActuel);
+    boolean ajouterItem(Item i){
+        int disp = emplacementVide(joueurActuel);
         if(disp<0){
-            return "Vous n'avez pas la place dans votre inventaire !";
+            println("Vous n'avez pas la place dans votre inventaire !");
+            return false;
         }else{
             joueurActuel.inventaire[disp] = i;
-            return i.nom + "à bien été ajouté à votre inventaire !";
+            println(i.nom + "à bien été ajouté à votre inventaire !");
+            return true;
         }
     }
 
     //Fonction pour Enlever des items à l'inventaire
-
-    String retirer_item(){return "";}
+    String retirerItem(Item i){
+        if(disponible(joueurActuel, i.id)<0){
+            return "Vous n'avez pas cet item dans votre inventaire !";
+        }else{
+            int disp = disponible(joueurActuel, i.id);
+            joueurActuel.inventaire[disp] = ITEM_VIDE;
+            return i.nom + "à bien été retiré de votre inventaire !";
+        }
+    }
 
     //Fonction pour avoir les infos sur les items
     String descItem(Item i){
         return i.nom + ": " +i.description;
     }
+
+    //-----------------------------------------------------//
 
     //-----------------/Fonctions de combat\---------------//
 
