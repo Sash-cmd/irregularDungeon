@@ -18,8 +18,8 @@ class Main extends Program {
 
     Joueur[] sauvegardes = lireSauvegardes("sauvegardes.csv");
     Joueur joueurActuel;
-    //commentaire
 
+    // au final on part peut etre sur un boolean est en combat car c'est le seul utile.
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
     final String EFFACER_TERM = "\033[H\033[2J"; //Propriété de Lowan-Houte incorcporated
 
@@ -32,21 +32,21 @@ class Main extends Program {
         String input = choisirSauvegarde();
 
         while(!equals(input,"0")){//Boucle du jeu
-            println("Que voulez vous faire ?\n");
-            println("0: Quitter le Jeu");
-            println("1: consulter l'inventaire");
-            println("2: consulter les verbes");
-            println("3: parcourir un donjon de niveau 1");
-            println("\n"+toStringLittle(joueurActuel));
+
+            afficherMessageDeplacement();
+
+            println("\n"+affichageReduit(joueurActuel));
             input = lireEntree();
-            if(equals(input, "1")){//Consulter l'inventaire
-                println(toStringLittle(joueurActuel.inventaire));
+
+            if(equals(input, "1")){//Ouvrir le sac à dos
+                println(affichageReduit(joueurActuel.inventaire));
                 println("Appuyez sur entrer pour continuer");
                 readString();
-            }else if(equals(input,"2")){//Consulter les verbes
+
+            }else if(equals(input,"2")){//Aller à l'académie
                 afficherGrimoire();
-                println("Appuyez sur entrer pour continuer");
-                readString();
+                
+
             }else if(equals(input,"3")){
                 parcourirDonjon(1);
 
@@ -60,6 +60,15 @@ class Main extends Program {
         positionJoueur = "Main Menu";
 
     }
+
+    void afficherMessageDeplacement(){
+        println("Que voulez vous faire ?\n");
+        println("0: Quitter le Jeu");
+        println("1: Ouvrir le sac à dos");
+        println("2: Aller à l'académie");
+        println("3: Aller dans le donjon");
+    }
+
     void afficherTxt(String file){
         File f = newFile(file);
         while(ready(f)){
@@ -88,37 +97,37 @@ class Main extends Program {
     }
 
     //---------------/Fonctions de toString\---------------//    
-    String toStringLittle(Joueur j){
+    String affichageReduit(Joueur j){
         if(equals(j.nom,"Vide")){return "Vide";}
         if(length(j.nom) < 14){
             return j.nom+"\t\t-niveau:"+j.level+"\txp:"+j.xp+"\tgold:"+j.gold+"\tpv:"+j.pv+"/"+j.pvMax+"PV";
         }
         return j.nom+"\t-niveau:"+j.level+"\txp:"+j.xp+"\tgold:"+j.gold+"\tpv:"+j.pv+"/"+j.pvMax+"PV";
     }
-    String toStringLittle(Joueur[] sauvegarde){
+    String affichageReduit(Joueur[] sauvegarde){
         String res = "";
         for(int i = 1; i<length(sauvegarde);i++){
-            res += i+"- "+toStringLittle(sauvegarde[i])+"\n";
+            res += i+"- "+affichageReduit(sauvegarde[i])+"\n";
         }
         return res;
     }
 
-    String toStringFight(Monstre m){
+    String affichageCombat(Monstre m){
         return "Monstre de couleur "+COULEURS[m.color]+" "+m.pv+"/"+m.pvMax;
     }
 
-    String toStringLittle(Verbe v){
+    String affichageReduit(Verbe v){
         return "Niveau: "+v.level+" -"+v.fr+"\t\t--"+v.bv+"\t-"+v.pr+"\t-"+v.pp;
     }
-    String toStringLittle(Verbe[] v){
+    String affichageReduit(Verbe[] v){
         String res = "Voici le contenu de votre grimmoire :\n\n";
         for(int i = 0;i<length(v);i++){
-            res += toStringLittle(v[i])+"\n";
+            res += affichageReduit(v[i])+"\n";
         }
         return res;
     }
 
-    String toStringLittle(Item[] inv){
+    String affichageReduit(Item[] inv){
         String res = "Voici le contenu de votre inventaire :\n\n";
         for(int i = 0;i<length(inv);i++){
             res += i+1 + ") " + inv[i].nom + "\n";
@@ -135,7 +144,7 @@ class Main extends Program {
         String input;
         do{
             println("Quelle sauvergarde voulez vous charger ?\n0- Quitter le jeu");
-            println(toStringLittle(sauvegardes));
+            println(affichageReduit(sauvegardes));
             input = lireEntree();
             if(equals(input,"0")){return input;}
         }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
@@ -150,11 +159,13 @@ class Main extends Program {
 
     //Faire des pages et pouvoir switch entre les pages, car sinon avec trop de verbes ce sera illisible 
     void afficherGrimoire(){
-        println(EFFACER_TERM+toStringLittle(joueurActuel.livre));
+        println(EFFACER_TERM+affichageReduit(joueurActuel.livre));
+        println("Appuyez sur entrer pour continuer");
+        readString();
     }
 
     void afficherInventaire(){
-        println(EFFACER_TERM+toStringLittle(joueurActuel.inventaire));
+        println(EFFACER_TERM+affichageReduit(joueurActuel.inventaire));
     }
 
     void afficherTutoriel(){
@@ -267,7 +278,7 @@ class Main extends Program {
     boolean combatMonstre(Monstre m){
         println("Un monstre se dresse devant vous !\n");
         while(m.pv > 0 && joueurActuel.pv > 0){
-            println(toStringFight(m));
+            println(affichageCombat(m));
             if(!demanderQuestion(m.verbe, m.color)){
                 //mauvaise réponse
                 degatsJoueur();
@@ -283,7 +294,7 @@ class Main extends Program {
             return true;
         }
     }
-    boolean motsVisibles(int color){
+    boolean[] motsVisibles(int color){
         boolean[] affiche = new boolean[]{true, true, true, true};
         if(color == 0){affiche[0] = false;}
         if(color == 1 || color == 4 || color == 6 || color == 7){affiche[1] = false;}
@@ -297,7 +308,7 @@ class Main extends Program {
         if(affiche[2]){print(v.pr+" ; ");}else{print(" ______ ; ");}
         if(affiche[3]){println(v.pp);}else{println(" ______");}
         println("\nQuel est le verbe manquant ?");
-        println("\n"+toStringLittle(joueurActuel));
+        println("\n"+affichageReduit(joueurActuel));
 
     }
 
@@ -314,6 +325,7 @@ class Main extends Program {
         int nbReponses = (color-1) / 3 + 1;
         while(nbReponses > 0){
             String reponse = lireEntree();
+            
             if(color == 0){                                          if(equals(reponse,v.fr)){return true;}else{return false;}}
 
             if(color == 1 || color == 4 || color == 6 || color == 7){if(equals(reponse,v.bv)){return true;}else{return false;}}
