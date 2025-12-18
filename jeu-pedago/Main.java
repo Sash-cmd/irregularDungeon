@@ -18,6 +18,7 @@ class Main extends Program {
 
     Joueur[] sauvegardes = lireSauvegardes("sauvegardes.csv");
     Joueur joueurActuel;
+    //commentaire
 
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
     final String EFFACER_TERM = "\033[H\033[2J"; //Propriété de Lowan-Houte incorcporated
