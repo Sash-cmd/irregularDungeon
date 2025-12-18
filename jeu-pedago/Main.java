@@ -3,28 +3,28 @@ import extensions.CSVFile;
 
 class Main extends Program {
     //VARIABLES GLOBALES 
-    final String[] COLORS = new String[]{"Black", "Red", "Green", "Blue", "Yellow", "Cyan", "Purple", "White"};
-    final int MONSTRE_PV_RANDOM = 20; // De combien les PVs peuvent varier 
-    final int MONSTRE_PV_BASE = 50; // De +0 à +MONSTRE_PV_RANDOM cette valeur
-    final int MONSTRE_PV_PAR_LEVEL = 30; // De combien les PVs montent par niveau de monstre.
+    final String[] COULEURS = new String[]{"Black", "Red", "Green", "Blue", "Yellow", "Cyan", "Purple", "White"};
+    final int MONSTRE_PV_ALEATOIRE = 20; // De combien les PVs peuvent varier 
+    final int MONSTRE_PV_BASE = 50; // De +0 à +MONSTRE_PV_ALEATOIRE cette valeur
+    final int MONSTRE_PV_PAR_NIVEAU = 30; // De combien les PVs montent par niveau de monstre.
     final int MAX_VERBES = 100;
-    final int MAX_ITEMS = 4;
+    final int MAX_OBJETS = 4;
     final int PV_MAX_JOUEUR = 3;
     final int CHANCE_SUR_X = 4; //chance sur x de tomber sur un coffre et non un monstre.
 
-    final Verbe[] ALL_VERBES = allVerbes("verbes.csv");
-    final Item[] ALL_ITEMS = allItems("items.csv");
-    final Item ITEM_VIDE = newItem(0,"Vide","Vous n'avez pas d'objet a cet endroit.");
+    final Verbe[] TOUS_VERBES = tousVerbes("verbes.csv");
+    final Item[] TOUS_OBJETS = tousObjets("items.csv");
+    final Item OBJET_VIDE = nouvObjet(0,"Vide","Vous n'avez pas d'objet a cet endroit.");
 
-    Joueur[] sauvegardes = readSauvegardes("sauvegardes.csv");
+    Joueur[] sauvegardes = lireSauvegardes("sauvegardes.csv");
     Joueur joueurActuel;
 
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
-    final String CLEAR_TERM = "\033[H\033[2J"; //Propriété de Lowan-Houte incorcporated
+    final String EFFACER_TERM = "\033[H\033[2J"; //Propriété de Lowan-Houte incorcporated
 
     void algorithm(){
         //affichage au lancement du programme
-        print(CLEAR_TERM);
+        print(EFFACER_TERM);
         afficherTxt("txt.txt");
         println("VERSION BETA 0.2\n");
         //choix de la sauvegarde;
@@ -37,13 +37,13 @@ class Main extends Program {
             println("2: consulter les verbes");
             println("3: parcourir un donjon de niveau 1");
             println("\n"+toStringLittle(joueurActuel));
-            input = readInput();
+            input = lireEntree();
             if(equals(input, "1")){//Consulter l'inventaire
                 println(toStringLittle(joueurActuel.inventaire));
                 println("Appuyez sur entrer pour continuer");
                 readString();
             }else if(equals(input,"2")){//Consulter les verbes
-                afficherGrimmoire();
+                afficherGrimoire();
                 println("Appuyez sur entrer pour continuer");
                 readString();
             }else if(equals(input,"3")){
@@ -54,7 +54,7 @@ class Main extends Program {
         }
     }
     
-    void SetUpGame(int numSauvegarde){
+    void initJeu(int numSauvegarde){
         joueurActuel = sauvegardes[numSauvegarde];
         positionJoueur = "Main Menu";
 
@@ -66,8 +66,8 @@ class Main extends Program {
         }
     }
     
-    String readInput(){print(">>>");return readInput(readString());}
-    String readInput(String txt){
+    String lireEntree(){print(">>>");return lireEntree(readString());}
+    String lireEntree(String txt){
         String res = toLowerCase(txt);
         String newRes = "";
         for(int i = 0; i < length(res); i++){
@@ -77,26 +77,16 @@ class Main extends Program {
         }
         return newRes;
     }
-    void test_readInput(){
-        assertEquals("",readInput(""));
-        assertEquals("abc",readInput("abc"));
-        assertEquals("abc",readInput("a b c "));
-        assertEquals("abc",readInput("ABC"));
-        assertEquals("abc",readInput("a b\n C"));
-        assertEquals("123",readInput("1 2 3"));
+    void test_lireEntree(){
+        assertEquals("",lireEntree(""));
+        assertEquals("abc",lireEntree("abc"));
+        assertEquals("abc",lireEntree("a b c "));
+        assertEquals("abc",lireEntree("ABC"));
+        assertEquals("abc",lireEntree("a b\n C"));
+        assertEquals("123",lireEntree("1 2 3"));
     }
 
-    //---------------/Fonctions de toString\---------------//
-    String toString(String[] s) {String result = "";for(int i=0;i<length(s);i++){result += s[i]+"; ";}result += "\n";return result;}
-    String toString(Verbe v)    {return "ID: "+v.id +" "+v.fr +" "+ v.bv +" "+ v.pr +" "+ v.pp +" lv"+ v.level;}
-    String toString(Verbe[] v)  {String result = "";for(int i=0;i<length(v);i++){result += toString(v[i])+";\n";}return result;}
-    String toString(Joueur j)   {return "Nom:"+j.nom +" "+"niveau:"+j.level +" "+"xp:"+j.xp +" "+"gold:"+j.gold +" "+"pv:"+j.pv +"\n\nVerbes :\n"+toString(j.livre)+"\nItems :\n"+toString(j.inventaire);}
-    String toString(Joueur[] s) {String res = "";for(int i=1;i<length(s);i++){res+= toString(s[i])+"\n";}return res;}
-    String toString(Monstre m)  {return "PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+" "+COLORS[m.color]+" xpGiven: "+m.xpGiven+" goldGiven: "+m.goldGiven+" VERBE: "+toString(m.verbe);}
-    String toString(Monstre[] f){String res="";for(int i=0;i<length(f);i++){res+=toString(f[i])+";\n";}return res;}
-    String toString(Item i)     {return "ID: "+i.id+" Nom: "+i.nom+" Description: "+i.description;}
-    String toString(Item[] inv) {String result="";for(int i=0;i<length(inv);i++){result+=toString(inv[i])+";\n";}return result;}
-    
+    //---------------/Fonctions de toString\---------------//    
     String toStringLittle(Joueur j){
         if(equals(j.nom,"Vide")){return "Vide";}
         if(length(j.nom) < 14){
@@ -113,7 +103,7 @@ class Main extends Program {
     }
 
     String toStringFight(Monstre m){
-        return "Monstre de couleur "+COLORS[m.color]+" "+m.pv+"/"+m.pvMax;
+        return "Monstre de couleur "+COULEURS[m.color]+" "+m.pv+"/"+m.pvMax;
     }
 
     String toStringLittle(Verbe v){
@@ -145,10 +135,10 @@ class Main extends Program {
         do{
             println("Quelle sauvergarde voulez vous charger ?\n0- Quitter le jeu");
             println(toStringLittle(sauvegardes));
-            input = readInput();
+            input = lireEntree();
             if(equals(input,"0")){return input;}
         }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
-        SetUpGame(intFromString(input));
+        initJeu(stringVersInt(input));
         return input;
     }
 
@@ -158,12 +148,12 @@ class Main extends Program {
     }
 
     //Faire des pages et pouvoir switch entre les pages, car sinon avec trop de verbes ce sera illisible 
-    void afficherGrimmoire(){
-        println(CLEAR_TERM+toStringLittle(joueurActuel.livre));
+    void afficherGrimoire(){
+        println(EFFACER_TERM+toStringLittle(joueurActuel.livre));
     }
 
     void afficherInventaire(){
-        println(CLEAR_TERM+toStringLittle(joueurActuel.inventaire));
+        println(EFFACER_TERM+toStringLittle(joueurActuel.inventaire));
     }
 
     void afficherTutoriel(){
@@ -178,17 +168,17 @@ class Main extends Program {
     //-----------------------------------------------------//
 
     //-------------------/Constructeurs\-------------------//
-    Joueur newJoueur(String nom, int level, int xp, int gold, int pv){
+    Joueur nouvJoueur(String nom, int level, int xp, int gold, int pv){
         /*Initialisation du joueur*/ Joueur j = new Joueur();
         if(length(nom) != 0){j.nom = nom;}else{j.nom = "Kévin Jourdin";}
         j.level = level;j.xp = xp;
         j.gold=gold;j.pvMax = 3;
         j.pv = pv;
         j.livre = new Verbe[MAX_VERBES];
-        j.inventaire = new Item[MAX_ITEMS];
+        j.inventaire = new Item[MAX_OBJETS];
         return j;
     }
-    Verbe newVerbe(int id, String fr, String bv, String pr, String pp, int level){
+    Verbe nouvVerbe(int id, String fr, String bv, String pr, String pp, int level){
         /*InitialisgetRowsation du verbe*/Verbe v = new Verbe();
         v.id=id;
         v.fr=fr;
@@ -198,18 +188,18 @@ class Main extends Program {
         v.level=level;
         return v;
     }
-    Monstre newMonstre(int color, Verbe verbe){
+    Monstre nouvMonstre(int color, Verbe verbe){
         /*Initialisation du monstre*/
         Monstre m = new Monstre();
         m.color = color;
         m.verbe = verbe;
-        m.pvMax = MONSTRE_PV_BASE + (int)(MONSTRE_PV_RANDOM*random()) + MONSTRE_PV_PAR_LEVEL*m.verbe.level; // 50-70 PVs de base, +30 à chaque niveau en plus.
+        m.pvMax = MONSTRE_PV_BASE + (int)(MONSTRE_PV_ALEATOIRE*random()) + MONSTRE_PV_PAR_NIVEAU*m.verbe.level; // 50-70 PVs de base, +30 à chaque niveau en plus.
         m.pv = m.pvMax;
         m.xpGiven = (90+(int)(20*random())+m.verbe.level*((m.color-1)/3))/2; //formule pour l'XP prenant en compte le niveau du verbe, et la couleur du monstre.
         m.goldGiven = m.xpGiven/3+(int)(25*random());
         return m;
     }
-    Item newItem(int id, String nom, String description){
+    Item nouvObjet(int id, String nom, String description){
         Item i = new Item();
         i.id = id;
         i.nom = nom;
@@ -241,7 +231,7 @@ class Main extends Program {
         return disponible(j,0);
     }
 
-    boolean ajouterItem(Item i){
+    boolean ajouterObjet(Item i){
         int disp = emplacementVide(joueurActuel);
         if(disp<0){
             println("Vous n'avez pas la place dans votre inventaire !");
@@ -254,18 +244,18 @@ class Main extends Program {
     }
 
     //Fonction pour Enlever des items à l'inventaire
-    String retirerItem(Item i){
+    String retirerObjet(Item i){
         if(disponible(joueurActuel, i.id)<0){
             return "Vous n'avez pas cet item dans votre inventaire !";
         }else{
             int disp = disponible(joueurActuel, i.id);
-            joueurActuel.inventaire[disp] = ITEM_VIDE;
+            joueurActuel.inventaire[disp] = OBJET_VIDE;
             return i.nom + "à bien été retiré de votre inventaire !";
         }
     }
 
     //Fonction pour avoir les infos sur les items
-    String descItem(Item i){
+    String descObjet(Item i){
         return i.nom + ": " +i.description;
     }
 
@@ -273,17 +263,17 @@ class Main extends Program {
 
     //-----------------/Fonctions de combat\---------------//
 
-    boolean fightMonstre(Monstre m){
+    boolean combatMonstre(Monstre m){
         println("Un monstre se dresse devant vous !\n");
         while(m.pv > 0 && joueurActuel.pv > 0){
             println(toStringFight(m));
-            if(!askQuestion(m.verbe, m.color)){
+            if(!demanderQuestion(m.verbe, m.color)){
                 //mauvaise réponse
-                damageJoueur();
+                degatsJoueur();
             }else{
                 //bonne réponse
-                damageMonstre(m, 40 + random(1,5));
-                changeVerb(m,1);
+                degatsMonstre(m, 40 + random(1,5));
+                changerVerbe(m,1);
             }
         }
         if(joueurActuel.pv == 0){
@@ -292,18 +282,15 @@ class Main extends Program {
             return true;
         }
     }
-
-    boolean askQuestion(Verbe v, int color){
-        // retourne true si bonne réponse, false sinon.
-
-        //définition de quels mots sont visibles:
+    boolean motsVisibles(int color){
         boolean[] affiche = new boolean[]{true, true, true, true};
         if(color == 0){affiche[0] = false;}
         if(color == 1 || color == 4 || color == 6 || color == 7){affiche[1] = false;}
         if(color == 2 || color == 4 || color == 5 || color == 7){affiche[2] = false;}
         if(color == 3 || color == 6 || color == 5 || color == 7){affiche[3] = false;}
-
-        //print de la question
+        return affiche;
+    }
+    void affichageQuestion(Verbe v, boolean[] affiche){
         if(affiche[0]){print(v.fr+" ; ");}else{print(" ______ ; ");}
         if(affiche[1]){print(v.bv+" ; ");}else{print(" ______ ; ");}
         if(affiche[2]){print(v.pr+" ; ");}else{print(" ______ ; ");}
@@ -311,23 +298,35 @@ class Main extends Program {
         println("\nQuel est le verbe manquant ?");
         println("\n"+toStringLittle(joueurActuel));
 
-        //definition 
-        String reponse = readInput();
-        int nbReponses = (color-1) / 3 + 1;
-    
-        if(color == 0){                                          if(equals(reponse,v.fr)){return true;}else{return false;}}
+    }
 
-        if(color == 1 || color == 4 || color == 6 || color == 7){if(equals(reponse,v.bv)){return true;}else{return false;}}
-        if(color == 2 || color == 4 || color == 5 || color == 7){if(equals(reponse,v.pr)){return true;}else{return false;}}
-        if(color == 3 || color == 6 || color == 5 || color == 7){if(equals(reponse,v.pp)){return true;}else{return false;}}
-        
+    boolean demanderQuestion(Verbe v, int color){
+        // retourne true si bonne réponse, false sinon.
+
+        //définition de quels mots sont visibles:
+       boolean[] affiche = motsVisibles(color);
+
+        //print de la question
+        affichageQuestion(v, affiche);
+
+        //definition 
+        int nbReponses = (color-1) / 3 + 1;
+        while(nbReponses > 0){
+            String reponse = lireEntree();
+            if(color == 0){                                          if(equals(reponse,v.fr)){return true;}else{return false;}}
+
+            if(color == 1 || color == 4 || color == 6 || color == 7){if(equals(reponse,v.bv)){return true;}else{return false;}}
+            if(color == 2 || color == 4 || color == 5 || color == 7){if(equals(reponse,v.pr)){return true;}else{return false;}}
+            if(color == 3 || color == 6 || color == 5 || color == 7){if(equals(reponse,v.pp)){return true;}else{return false;}}
+            nbReponses -= 1;       
+        }
         return false;
     }
 
     //Il faut faire un truc qui change le verbe du monstre (+sa couleur si on veut) si il lui reste des PV.
     //Peut être un type de monstre qui peut en plus changer de couleur.
-    void changeVerb(Monstre m, int level){
-        m.verbe = generateVerbe(1);
+    void changerVerbe(Monstre m, int level){
+        m.verbe = genererVerbe(1);
     }
     
 
@@ -336,10 +335,10 @@ class Main extends Program {
     //---------------/Fonctions de Donjon\-----------------//
 
     void parcourirDonjon(int niveau){
-        Monstre[] floor = generateFloor(niveau);
+        Monstre[] floor = genererEtage(niveau);
         boolean alive = true;
         for(int i = 0; i<length(floor); i++){
-            if(alive && fightMonstre(floor[i])){
+            if(alive && combatMonstre(floor[i])){
                 println("Bravo ! Le monstre à été vaincu");
             }else{
                 alive = false;
@@ -353,37 +352,37 @@ class Main extends Program {
         }
     }
 
-    Monstre[] generateFloor(int level){
+    Monstre[] genererEtage(int level){
         int size = (level*2)+(level/2)+1;
         Monstre[] floor = new Monstre[size];
         for(int i=0; i<size; i++){
-            floor[i] = generateMonstre(level);
+            floor[i] = genererMonstre(level);
         }
         return floor;
     }
 
-    Monstre generateMonstre(int level){
+    Monstre genererMonstre(int level){
         if(level == 1){
             int color = random(1,3);//trois couleurs primaires
-            return newMonstre(color, generateVerbe(level));
+            return nouvMonstre(color, genererVerbe(level));
         }else if(level == 2){
             int color = random(0,3);//précédents + blanc
-            return newMonstre(color, generateVerbe(level));
+            return nouvMonstre(color, genererVerbe(level));
         }else if(level == 3){
             int color = random(0,6);//précédents + couleurs secondaires
-            return newMonstre(color, generateVerbe(level));
+            return nouvMonstre(color, genererVerbe(level));
         }else{
             int color = random(0,7);//précédents + noir (toutes les couleurs)
-            return newMonstre(color, generateVerbe(level));
+            return nouvMonstre(color, genererVerbe(level));
         }
     }
-    void test_generateMonstre(){
-        SetUpGame(2);
-        Monstre m = generateMonstre(1);
+    void test_genererMonstre(){
+        initJeu(2);
+        Monstre m = genererMonstre(1);
         println(toString(m));
     }
 
-    Verbe generateVerbe(int level){
+    Verbe genererVerbe(int level){
         int size = length(joueurActuel.livre);
         int[] allId = new int[size];
         int indiceTemp = 0;
@@ -394,32 +393,32 @@ class Main extends Program {
             }
         }
         int resultId = allId[random(0,size-1)];
-        return ALL_VERBES[resultId];
+        return TOUS_VERBES[resultId];
     }
-    void test_generateVerbe(){
-        SetUpGame(2);
-        Verbe verbeG = generateVerbe(1);
+    void test_genererVerbe(){
+        initJeu(2);
+        Verbe verbeG = genererVerbe(1);
         println(toString(verbeG));
     }
     //-----------------------------------------------------//
 
     //---------------/Fonctions de Combat\-----------------//
 
-    void damageMonstre(Monstre monstre, int damage){
+    void degatsMonstre(Monstre monstre, int damage){
         monstre.pv = monstre.pv - damage;
         if(monstre.pv < 0){
             monstre.pv = 0;
         }
         println("BAM !\n");
     }
-    void damageJoueur(){
+    void degatsJoueur(){
         joueurActuel.pv = joueurActuel.pv - 1;
         if(joueurActuel.pv == 0){
             //deathJoueur();
         }
         println("OUCH !\n");
     }
-    void healJoueur(){
+    void soinsJoueur(){
         if(joueurActuel.pv < joueurActuel.pvMax){
             joueurActuel.pv += 1;
         }
@@ -429,19 +428,19 @@ class Main extends Program {
     //-----------------/Fonctions de CSV\------------------//
 
     //Fonctions pour lire le fichier de sauvegarde csv
-    Joueur[] readSauvegardes(String fichier){
+    Joueur[] lireSauvegardes(String fichier){
         CSVFile f = loadCSV("csv/"+fichier);
         Joueur[] sauvegardes = new Joueur[rowCount(f)];
         int nbJoueurs = 0;
         for(int l = 1; l<rowCount(f); l++){
-            sauvegardes[l] = newJoueur(getCell(f, l, 0),
-            intFromString(getCell(f,l,1)),
-            intFromString(getCell(f,l,2)),
-            intFromString(getCell(f,l,3)),
-            intFromString(getCell(f,l,4)));
+            sauvegardes[l] = nouvJoueur(getCell(f, l, 0),
+            stringVersInt(getCell(f,l,1)),
+            stringVersInt(getCell(f,l,2)),
+            stringVersInt(getCell(f,l,3)),
+            stringVersInt(getCell(f,l,4)));
             sauvegardes[l].pvMax = PV_MAX_JOUEUR;
-            sauvegardes[l].livre = newLivre(f,l);
-            sauvegardes[l].inventaire = newInventaire(f,l);
+            sauvegardes[l].livre = nouvLivre(f,l);
+            sauvegardes[l].inventaire = nouvInventaire(f,l);
             nbJoueurs += 1;
         }
         return sauvegardes;
@@ -449,32 +448,32 @@ class Main extends Program {
     
 
     //Fonction pour enregistrer les verbes d'un csv en tableau
-    Verbe[] allVerbes(String file){
+    Verbe[] tousVerbes(String file){
         CSVFile f = loadCSV("csv/"+file);
         Verbe[] livre = new Verbe[rowCount(f)-1];
         for(int l = 0; l < length(livre); l++){
-            livre[l] = newVerbe(intFromString(getCell(f,l+1,0)),
+            livre[l] = nouvVerbe(stringVersInt(getCell(f,l+1,0)),
             getCell(f,l+1,1),
             getCell(f,l+1,2),
             getCell(f,l+1,3),
             getCell(f,l+1,4),
-            intFromString(getCell(f,l+1,5)));
+            stringVersInt(getCell(f,l+1,5)));
         }
         return livre;
     }
     //Fonctionpour avoir le tableau de verbe d'un joueur a partir de son csv
-    Verbe[] newLivre(CSVFile save, int ligne){
+    Verbe[] nouvLivre(CSVFile save, int ligne){
         String livreString = getCell(save,ligne,5);
-        int[] nombres = StringIntoInt(livreString);
+        int[] nombres = stringVersTab(livreString);
         int nbVerbes = length(nombres);
         Verbe[] livre = new Verbe[nbVerbes];
         for(int i = 0; i<nbVerbes; i++){
-            livre[i] = ALL_VERBES[nombres[i]];
+            livre[i] = TOUS_VERBES[nombres[i]];
         }
         return livre;
     }
     //Fonction String de chiffres en int: "123" => 123
-    int intFromString(String input){
+    int stringVersInt(String input){
         int result = 0;
         int power = 1;
         for(int i = length(input)-1; i >= 0; i=i-1){
@@ -483,57 +482,57 @@ class Main extends Program {
         }
         return result;
     }
-    void test_intFromString(){
-        assertTrue(123 == intFromString("123"));
+    void test_stringVersInt(){
+        assertTrue(123 == stringVersInt("123"));
     }
     //Fonction "0102102500" => [1, 2, 10, 25, 0]
-    int[] StringIntoInt(String numbers){
+    int[] stringVersTab(String numbers){
         int[] n = new int[length(numbers)/2];
         for(int i = 0; i<length(n); i++){
             n[i] = 10*(charAt(numbers, i*2)-'0')+(charAt(numbers, i*2+1)-'0');
         }
         return n;
     }
-    void test_StringIntoInt(){
+    void test_stringVersTab(){
         int[] n = new int[]{1,2,10,25};
-        int[] m = StringIntoInt("01021025"); 
+        int[] m = stringVersTab("01021025"); 
         assertEquals(n[0], m[0]);
         assertEquals(n[1], m[1]);
         assertEquals(n[2], m[2]);
         assertEquals(n[3], m[3]);
     }
 
-    Item[] allItems(String file){
+    Item[] tousObjets(String file){
         CSVFile f = loadCSV("csv/"+file);
         Item[] inv = new Item[rowCount(f)-1];
         for(int l = 0; l<length(inv);l++){
-            inv[l] = newItem(intFromString(getCell(f,l+1,0)), getCell(f,l+1,1), getCell(f,l+1,2));
+            inv[l] = nouvObjet(stringVersInt(getCell(f,l+1,0)), getCell(f,l+1,1), getCell(f,l+1,2));
         }
         return inv;
     }
-    Item[] newInventaire(CSVFile save, int ligne){
-        Item[] inv = new Item[MAX_ITEMS];
-        int[] nombres = numberItemIntoIntTab(getCell(save,ligne,6));
+    Item[] nouvInventaire(CSVFile save, int ligne){
+        Item[] inv = new Item[MAX_OBJETS];
+        int[] nombres = nombreObjetVersTab(getCell(save,ligne,6));
         for(int i = 0; i < length(inv); i++){
-            inv[i] = ALL_ITEMS[nombres[i]];
+            inv[i] = TOUS_OBJETS[nombres[i]];
         }
         return inv;
     }
-    int[] numberItemIntoIntTab(String numbers){
+    int[] nombreObjetVersTab(String numbers){
         //numbers forcement de forme "1234"
-        int[] n = new int[MAX_ITEMS];
+        int[] n = new int[MAX_OBJETS];
         n[0] = charAt(numbers,0)-'0';
         n[1] = charAt(numbers,1)-'0';
         n[2] = charAt(numbers,2)-'0';
         n[3] = charAt(numbers,3)-'0';
         return n;
     }
-    void test_numberItemIntoIntTab(){
+    void test_nombreObjetVersTab(){
         int[] n = new int[]{1,2,3,4};
-        assertTrue(n[0]==numberItemIntoIntTab("1234")[0]);
-        assertTrue(n[1]==numberItemIntoIntTab("1234")[1]);
-        assertTrue(n[2]==numberItemIntoIntTab("1234")[2]);
-        assertTrue(n[3]==numberItemIntoIntTab("1234")[3]);
+        assertTrue(n[0]==nombreObjetVersTab("1234")[0]);
+        assertTrue(n[1]==nombreObjetVersTab("1234")[1]);
+        assertTrue(n[2]==nombreObjetVersTab("1234")[2]);
+        assertTrue(n[3]==nombreObjetVersTab("1234")[3]);
     }
     
 
@@ -549,7 +548,17 @@ class Main extends Program {
 
     //Fonction d'affichage de Sprites
     
-    //-----------------------------------------------------//
+    //-----------------/Fonctions de Debug\----------------//
+    String toString(String[] s) {String result = "";for(int i=0;i<length(s);i++){result += s[i]+"; ";}result += "\n";return result;}
+    String toString(Verbe v)    {return "ID: "+v.id +" "+v.fr +" "+ v.bv +" "+ v.pr +" "+ v.pp +" lv"+ v.level;}
+    String toString(Verbe[] v)  {String result = "";for(int i=0;i<length(v);i++){result += toString(v[i])+";\n";}return result;}
+    String toString(Joueur j)   {return "Nom:"+j.nom +" "+"niveau:"+j.level +" "+"xp:"+j.xp +" "+"gold:"+j.gold +" "+"pv:"+j.pv +"\n\nVerbes :\n"+toString(j.livre)+"\nItems :\n"+toString(j.inventaire);}
+    String toString(Joueur[] s) {String res = "";for(int i=1;i<length(s);i++){res+= toString(s[i])+"\n";}return res;}
+    String toString(Monstre m)  {return "PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+" "+COULEURS[m.color]+" xpGiven: "+m.xpGiven+" goldGiven: "+m.goldGiven+" VERBE: "+toString(m.verbe);}
+    String toString(Monstre[] f){String res="";for(int i=0;i<length(f);i++){res+=toString(f[i])+";\n";}return res;}
+    String toString(Item i)     {return "ID: "+i.id+" Nom: "+i.nom+" Description: "+i.description;}
+    String toString(Item[] inv) {String result="";for(int i=0;i<length(inv);i++){result+=toString(inv[i])+";\n";}return result;}
 
+    
     
 }   
