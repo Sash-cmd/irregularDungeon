@@ -10,6 +10,7 @@ class Item{
     3 => petit potion de QI
     4 => grande potion de QI
     MAX 9 
+    test git
     */
 
 }
