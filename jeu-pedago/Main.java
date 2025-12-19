@@ -290,29 +290,57 @@ class Main extends Program {
     //---------------/Fonctions de l'Académie\-----------------//
 
     void parcourirAcademie(){
+        String input = "";
+        do{
+        effacerTerm();
         println("Bienvenue à l'Académie de Magie !\nQue voulez vous faire ?\n");
         println("0: Retour");
         println("1: Aller en cours");
         println("2: Aller au RU (magique)");
-        String input = lireEntree();
+        input = lireEntree();
         if(equals(input,"1")){
             println("Bienvenue en cours ! Ici vous pouvez acheter des verbes pour votre grimoire.\n");
             println("0: Retour");
             println("1: Acheter un verbe");
-        String input2 = lireEntree();
+            String input2 = lireEntree();
             if(equals(input2,"1")){
                 achatVerbe(verbesDisponibles(joueurActuel));
-            }else if(equals(input2,"0")){   
-        }else if(equals(input,"2")){
+            }else if(equals(input2,"0")){
+                return;
+            }  
+            }else if(equals(input,"2")){
             println("Bienvenue au RU ! Ici vous pouvez acheter des items magiques pour votre inventaire.\n");
-            //Fonction d'achat d'item
-        }else if(equals(input,"0")){
+            achatItem();
+            }else if(equals(input,"0")){
             return;
-        }else{
+            }else{
             println("Je ne suis pas sûr de bien comprendre ce que tu veux aventurier...");
+            }
         }
+        while(!equals(input,"0"));
     }
+    
+    void achatItem(){
+        for(int i=1;i<length(TOUS_OBJETS);i++){
+            println(i + ": " + TOUS_OBJETS[i].nom + " : " + TOUS_OBJETS[i].description);
+        }
+        println("\nEntrez le numéro de l'objet que vous souhaitez acheter, ou 0 pour revenir en arrière.");
+        String input = lireEntree();
+        int choix = stringVersInt(input);
+        if(choix == 0){
+            return;
+        }
+        if(choix < 1 || choix >= length(TOUS_OBJETS)){
+            println("Cet objet n'existe pas !");
+            readString();
+            return;
+        }
+        ajouterObjet(TOUS_OBJETS[choix]);
+        
+        println("Appuyez sur une touche pour continuer");
+        readString();
     }
+
     Verbe[] verbesDisponibles(Joueur j){
         //compter les verbes non possédés
         Verbe[] temp = new Verbe[length(TOUS_VERBES)];
@@ -352,6 +380,9 @@ class Main extends Program {
         newLivre[oldSize] = choisi;
         joueurActuel.livre = newLivre;
         println("Vous avez appris le verbe "+affichageReduit(choisi)+" !");
+        println("Appuyez sur une touche pour continuer");
+        readString();
+    
     }
 
     //-----------------------------------------------------//
@@ -475,7 +506,7 @@ class Main extends Program {
             return false;
         }else{
             joueurActuel.inventaire[disp] = i;
-            println(i.nom + "à bien été ajouté à votre inventaire !");
+            println(i.nom + " à bien été ajouté à votre inventaire !");
             return true;
         }
     }

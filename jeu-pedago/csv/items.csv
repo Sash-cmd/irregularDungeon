@@ -2,5 +2,5 @@ ID,nom,description
 0,Vide,Vous n'avez pas d'objet a cet endroit.
 1,Petite potion de soin,Vous soigne de 1pv.
 2,Grande potion de soin,Vous soigne de tout vos pv.
-3,Petite fiole de QI,Vous donne les premières letrtes des mots.
+3,Petite fiole de QI,Vous donne la première lettre des mots.
 4,Grande fiole de QI,Vous donne les 2 premières lettres des mots.
