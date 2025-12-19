@@ -157,6 +157,26 @@ class Main extends Program {
         println(toString(sauvegardes[numSauvegarde]));
     }
 
+    void ouvrirSac(){
+        println("Que voulez vous faire ?\n");
+        println("0: Retour");
+        println("1: Consulter l'inventaire");
+        println("2: Ouvrir le grimoire");
+        String input = lireEntree();
+        if (equals(input,"2")){
+            if(!equals(positionJoueur,"Combat")){
+                afficherGrimoire();
+            }else{
+                println("Vous êtes en combat, vous ne pouvez pas consulter votre grimoire !")}
+        }else if(equals(input,"1")){
+            afficherInventaire();
+        }else if(equals(input,"0")){
+            return
+        }else{
+            println("Je ne suis pas sûr de bien comprendre ce que tu veux aventurier...");
+        }
+    }
+
     //Faire des pages et pouvoir switch entre les pages, car sinon avec trop de verbes ce sera illisible 
     void afficherGrimoire(){
         println(EFFACER_TERM+affichageReduit(joueurActuel.livre));
@@ -225,10 +245,42 @@ class Main extends Program {
     //Fonction d'ériture pour avoir les caractères print les uns après les autres comme dans un RPG
 
     //------------------/Fonctions d'items\----------------//
+    
+    //Fonction de rangement de l'inventaire (les items vides à la fin)
+
+    //Fonction de tri de l'inventaire par ID croissant
+
+
 
     void rangerInventaire(Joueur j){
-        
+        for(int i=0; i<length(j.inventaire);i++){
+            if(j.inventaire[i].id==0){
+                for(int k=i+1; k<length(j.inventaire);k++){
+                    if(j.inventaire[k].id!=0){
+                        Item temp = j.inventaire[i];
+                        j.inventaire[i] = j.inventaire[k];
+                        j.inventaire[k] = temp;
+                    }
+                }
+            }
+        }
     }
+
+    void test_rangerInventaire(){
+        Joueur j = nouvJoueur("Test",1,0,0,3);
+        j.inventaire[0] = nouvObjet(1,"","");
+        j.inventaire[1] = nouvObjet(0,"","");
+        j.inventaire[2] = nouvObjet(2,"","");
+        j.inventaire[3] = nouvObjet(0,"","");
+        rangerInventaire(j);
+        assertTrue(j.inventaire[0].id==1);
+        assertTrue(j.inventaire[1].id==2);
+        assertTrue(j.inventaire[2].id==0);
+        assertTrue(j.inventaire[3].id==0);
+    }
+
+
+
 
     //Fonction d'ajout d'item à l'inventaire
     int disponible(Joueur j, int id){
@@ -312,16 +364,7 @@ class Main extends Program {
 
     }
 
-    boolean demanderQuestion(Verbe v, int color){
-        // retourne true si bonne réponse, false sinon.
-
-        //définition de quels mots sont visibles:
-       boolean[] affiche = motsVisibles(color);
-
-        //print de la question
-        affichageQuestion(v, affiche);
-
-        //definition 
+    boolean verifierReponse(Verbe v, int color){
         int nbReponses = (color-1) / 3 + 1;
         while(nbReponses > 0){
             String reponse = lireEntree();
@@ -334,6 +377,20 @@ class Main extends Program {
             nbReponses -= 1;       
         }
         return false;
+    }
+
+    boolean demanderQuestion(Verbe v, int color){
+        // retourne true si bonne réponse, false sinon.
+
+        //définition de quels mots sont visibles:
+       boolean[] affiche = motsVisibles(color);
+
+        //print de la question
+        affichageQuestion(v, affiche);
+
+        //definition 
+
+        return verifierReponse(v, color);
     }
 
     //Il faut faire un truc qui change le verbe du monstre (+sa couleur si on veut) si il lui reste des PV.
