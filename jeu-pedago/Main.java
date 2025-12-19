@@ -205,6 +205,13 @@ class Main extends Program {
             println(affichageReduit(sauvegardes));
             input = lireEntree();
             if(equals(input,"0")){return input;}
+            println(sauvegardes[charAt(input,0)-'0'].nom);
+            if(equals(sauvegardes[charAt(input,0)-'0'].nom,"Vide")){
+                input = "0";
+                println("Vous ne pouvez pas choisir une sauvegarde vide!");
+                println("appuyez sur entrer pour continuer");
+                readString();
+            }
         }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
         initJeu(stringVersInt(input));
         return input;
@@ -576,6 +583,7 @@ class Main extends Program {
         for(int i = 0; i<length(floor); i++){
             if(alive && combatMonstre(floor[i])){
                 println("Bravo ! Le monstre à été vaincu");
+                gainXP(100+random(1,20));
             }else{
                 alive = false;
             }
@@ -645,7 +653,7 @@ class Main extends Program {
         if(monstre.pv < 0){
             monstre.pv = 0;
         }
-        println("BAM !\n");
+        println("BAM ! le monstre à perdu"+damage+"pv!\n");
     }
     void degatsJoueur(){
         joueurActuel.pv = joueurActuel.pv - 1;
