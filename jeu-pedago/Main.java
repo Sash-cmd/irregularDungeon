@@ -49,6 +49,7 @@ class Main extends Program {
         while(!equals(input,"0")){//Boucle du jeu
 
             afficherMessageDeplacement();
+            println(toString(sauvegardes));
 
             println("\n"+affichageReduit(joueurActuel));
             input = lireEntree();
@@ -196,6 +197,29 @@ class Main extends Program {
 
     //--------------/Fonctions de sauvegardes\-------------//
 
+    void sauvegarderEtat(){
+        String[][] sauvegardesTab = sauvegardesEnTab();
+        saveCSV(sauvegardesTab, "csv/sauvegardes.csv");
+    }
+
+    String[][] sauvegardesEnTab(){
+        String[][] resultat = new String[4][7];
+        resultat[0] = nouvStringTab("Nom","level","xp","gold","pv","listeVerbeForme\"00\"","listeItemForme\"0000\"(0=rien,1=fiole,ect)");
+        for(int i=1; i<4; i++){
+            resultat[i][0] = sauvegardes[i].nom;
+            resultat[i][1] = ""+sauvegardes[i].level;
+            resultat[i][2] = ""+sauvegardes[i].xp;
+            resultat[i][3] = ""+sauvegardes[i].gold;
+            resultat[i][4] = ""+sauvegardes[i].pv;
+        }
+        return resultat;
+    }
+
+    String[] nouvStringTab(String elem1,String elem2,String elem3,String elem4,String elem5,String elem6,String elem7){
+        String[] tab = new String[]{elem1,elem2,elem3,elem4,elem5,elem6,elem7};
+        return tab;
+    }
+
     String choisirSauvegarde(){
         //choix de la sauvegarde.
         String input;
@@ -218,15 +242,42 @@ class Main extends Program {
     }
 
     void creerSauvegarde(){
-        //à Completer
+        String input;
+        do{
+            afficherTitre();
+            println("Quelle sauvergarde voulez vous créer ?\n\n0: Retour\n");
+            println(affichageReduit(sauvegardes));
+            input = lireEntree();
+            if(equals(input,"0")){return;}
+            println(sauvegardes[charAt(input,0)-'0'].nom);
+            if(!equals(sauvegardes[charAt(input,0)-'0'].nom,"Vide")){
+                input = "0";
+                println("Vous ne pouvez pas choisir une sauvegarde en cours!");
+                println("appuyez sur entrer pour continuer");
+                readString();
+            }
+        }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
+        sauvegardes[stringVersInt(input)] = creationJoueur();
+        sauvegarderEtat();
     }
 
     void copierSauvegarde(){
-        //à Completer
+        println("Pas disponible pendant l'alpha");
+        println("appuyez sur entrer pour continuer");
+        readString();
     }
 
     void effacerSauvegarde(){
-        //à Completer
+        println("Pas disponible pendant l'alpha");
+        println("appuyez sur entrer pour continuer");
+        readString();
+    }
+
+    Joueur creationJoueur(){
+        effacerTerm();
+        println("Quel est votre nom ?");
+        String nom = lireEntree();
+        return nouvJoueur(nom,1,0,0,3);
     }
 
     //-----------------/Fonctions de print\----------------//
