@@ -167,11 +167,12 @@ class Main extends Program {
             if(!equals(positionJoueur,"Combat")){
                 afficherGrimoire();
             }else{
-                println("Vous êtes en combat, vous ne pouvez pas consulter votre grimoire !")}
+                println("Vous êtes en combat, vous ne pouvez pas consulter votre grimoire !");
+            }
         }else if(equals(input,"1")){
             afficherInventaire();
         }else if(equals(input,"0")){
-            return
+            return;
         }else{
             println("Je ne suis pas sûr de bien comprendre ce que tu veux aventurier...");
         }
