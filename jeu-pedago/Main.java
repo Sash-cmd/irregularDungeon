@@ -227,6 +227,7 @@ class Main extends Program {
             println("Quelle sauvergarde voulez vous charger ?\n\n0: Retour\n");
             println(affichageReduit(sauvegardes));
             input = lireEntree();
+            if(length(input)==0){}else{
             if(equals(input,"0")){return input;}
             println(sauvegardes[charAt(input,0)-'0'].nom);
             if(equals(sauvegardes[charAt(input,0)-'0'].nom,"Vide")){
@@ -234,7 +235,7 @@ class Main extends Program {
                 println("Vous ne pouvez pas choisir une sauvegarde vide!");
                 println("appuyez sur entrer pour continuer");
                 readString();
-            }
+            }}
         }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
         initJeu(stringVersInt(input));
         return input;
@@ -247,6 +248,7 @@ class Main extends Program {
             println("Quelle sauvergarde voulez vous créer ?\n\n0: Retour\n");
             println(affichageReduit(sauvegardes));
             input = lireEntree();
+            if(length(input)==0){}else{
             if(equals(input,"0")){return;}
             println(sauvegardes[charAt(input,0)-'0'].nom);
             if(!equals(sauvegardes[charAt(input,0)-'0'].nom,"Vide")){
@@ -254,7 +256,7 @@ class Main extends Program {
                 println("Vous ne pouvez pas choisir une sauvegarde en cours!");
                 println("appuyez sur entrer pour continuer");
                 readString();
-            }
+            }}
         }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
         sauvegardes[stringVersInt(input)] = creationJoueur();
         //sauvegarderEtat();
@@ -462,6 +464,9 @@ class Main extends Program {
             j.livre[i] = TOUS_VERBES[i];
         }
         j.inventaire = new Item[MAX_OBJETS];
+        for(int i=0; i<4; i++){
+            j.inventaire[i] = TOUS_OBJETS[0];
+        }
         return j;
     }
     Verbe nouvVerbe(int id, String fr, String bv, String pr, String pp, int level){
