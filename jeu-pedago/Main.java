@@ -31,8 +31,9 @@ class Main extends Program {
         input = menuPrincipalChoix();
 
         if(equals(input,"1")){
-            choisirSauvegarde();
-            jeu();            
+            if(!equals(choisirSauvegarde(),"0")){
+                jeu();
+            }
         }
         }while(!equals(input,"0"));
     }
@@ -47,9 +48,7 @@ class Main extends Program {
             input = lireEntree();
 
             if(equals(input, "1")){//Ouvrir le sac à dos
-                println(affichageReduit(joueurActuel.inventaire));
-                println("Appuyez sur entrer pour continuer");
-                readString();
+                ouvrirSac();
 
             }else if(equals(input,"2")){//Aller à l'académie
                 afficherGrimoire();
@@ -99,8 +98,7 @@ class Main extends Program {
 
     String menuPrincipalChoix(){ //"0"=> quitter le jeu ; "2"||"3"||"4"=>action puis retour menu ; "1"=> continuers
         effacerTerm();
-        afficherTxt("txt/titre.txt");
-        println("VERSION BETA 0.3\n");
+        afficherTitre();
         afficherMessageChoixSurSauvegardes();
         String input = lireEntree();
 
@@ -131,7 +129,7 @@ class Main extends Program {
 
     void afficherMessageDeplacement(){
         effacerTerm();
-        println("Que voulez vous faire ?\n");
+        println("\nQue voulez vous faire ?\n");
         println("0: Quitter la partie");
         println("1: Ouvrir le sac à dos");
         println("2: Aller à l'académie");
@@ -141,7 +139,7 @@ class Main extends Program {
 
     //-----------------------------------------------------// 
 
-    //---------------/Fonctions de toString\---------------//    
+    //----------------/Fonctions de String\----------------//    
     String affichageReduit(Joueur j){
         if(equals(j.nom,"Vide")){return "Vide";}
         if(length(j.nom) < 14){
@@ -152,7 +150,7 @@ class Main extends Program {
     String affichageReduit(Joueur[] sauvegarde){
         String res = "";
         for(int i = 1; i<length(sauvegarde);i++){
-            res += i+"- "+affichageReduit(sauvegarde[i])+"\n";
+            res += i+": "+affichageReduit(sauvegarde[i])+"\n";
         }
         return res;
     }
@@ -188,7 +186,8 @@ class Main extends Program {
         //choix de la sauvegarde.
         String input;
         do{
-            println("Quelle sauvergarde voulez vous charger ?\n0- Quitter le jeu");
+            afficherTitre();
+            println("Quelle sauvergarde voulez vous charger ?\n\n0: Retour\n");
             println(affichageReduit(sauvegardes));
             input = lireEntree();
             if(equals(input,"0")){return input;}
@@ -213,26 +212,38 @@ class Main extends Program {
     void afficherSauvegarde(int numSauvegarde){
         println(toString(sauvegardes[numSauvegarde]));
     }
+    void afficherTitre(){
+        effacerTerm();
+        afficherTxt("txt/titre.txt");
+        println("VERSION BETA 0.3\n");
+    }
 
-    void ouvrirSac(){
-        println("Que voulez vous faire ?\n");
+    //-----------------------------------------------------//
+
+    //---------------/Fonctions de sac à dos\--------------//
+    void afficherMessageChoixSac(){
+        effacerTerm();
+        println("\nVous êtes dans votre sac,\nQue voulez vous faire ?\n");
         println("0: Retour");
         println("1: Consulter l'inventaire");
-        println("2: Ouvrir le grimoire");
-        String input = lireEntree();
-        if (equals(input,"2")){
-            if(!equals(positionJoueur,"Combat")){
-                afficherGrimoire();
-            }else{
-                println("Vous êtes en combat, vous ne pouvez pas consulter votre grimoire !");
+        println("2: Ouvrir le grimoire\n");
+    }
+
+    void ouvrirSac(){
+        String input;
+        do{
+            afficherMessageChoixSac();
+            input = lireEntree();
+            if(equals(input,"1")){
+                afficherInventaire();
+            }else if (equals(input,"2")){
+                if(!equals(positionJoueur,"Combat")){
+                    afficherGrimoire();
+                }else{
+                    println("Vous êtes en combat, vous ne pouvez pas consulter votre grimoire !");
+                }
             }
-        }else if(equals(input,"1")){
-            afficherInventaire();
-        }else if(equals(input,"0")){
-            return;
-        }else{
-            println("Je ne suis pas sûr de bien comprendre ce que tu veux aventurier...");
-        }
+        }while(!equals(input,"0"));
     }
 
     //Faire des pages et pouvoir switch entre les pages, car sinon avec trop de verbes ce sera illisible 
@@ -244,7 +255,11 @@ class Main extends Program {
 
     void afficherInventaire(){
         println(EFFACER_TERM+affichageReduit(joueurActuel.inventaire));
+        println("Appuyez sur entrer pour continuer");
+        readString();
     }
+
+    //-----------------------------------------------------//
 
     void afficherTutoriel(){
         println("Bienvenue dans Irregular Dungeon ! \n\n"+
