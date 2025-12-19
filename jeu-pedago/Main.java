@@ -615,6 +615,8 @@ class Main extends Program {
             if(alive && combatMonstre(floor[i])){
                 println("Bravo ! Le monstre à été vaincu");
                 gainXP(100+random(1,20));
+                gainOr(10+random(1,30));
+                
             }else{
                 alive = false;
             }
@@ -709,6 +711,18 @@ class Main extends Program {
         println("\nVous avez gagné un niveau !!!");
         joueurActuel.level += 1;
     }
+    
+    void gainOr(int orGagne){
+        joueurActuel.gold += orGagne;
+    }
+
+    }
+    void test_gainOr(){
+        initJeu(2);
+        int oldGold = joueurActuel.gold;
+        gainOr(50);
+        assertTrue(joueurActuel.gold == oldGold + 50);
+    }    
     //-----------------------------------------------------//
 
     //-----------------/Fonctions de CSV\------------------//
