@@ -49,7 +49,6 @@ class Main extends Program {
         while(!equals(input,"0")){//Boucle du jeu
 
             afficherMessageDeplacement();
-            println(toString(sauvegardes));
 
             println("\n"+affichageReduit(joueurActuel));
             input = lireEntree();
@@ -258,7 +257,7 @@ class Main extends Program {
             }
         }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
         sauvegardes[stringVersInt(input)] = creationJoueur();
-        sauvegarderEtat();
+        //sauvegarderEtat();
     }
 
     void copierSauvegarde(){
@@ -767,7 +766,7 @@ class Main extends Program {
         joueurActuel.gold += orGagne;
     }
 
-    }
+    
     void test_gainOr(){
         initJeu(2);
         int oldGold = joueurActuel.gold;
