@@ -286,7 +286,7 @@ class Main extends Program {
     void afficherTitre(){
         effacerTerm();
         afficherTxt("txt/titre.txt");
-        println("VERSION BETA 0.3\n");
+        println("VERSION ALPHA\n");
     }
     void afficherMessagePasArgent(){
         println("\nMince, il vous manque du gold !");
