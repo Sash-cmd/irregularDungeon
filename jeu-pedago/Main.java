@@ -28,20 +28,21 @@ class Main extends Program {
     // au final on part peut etre sur un boolean est en combat car c'est le seul utile.
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
     final String EFFACER_TERM = "\033[H\033[2J"; //Propriété de Lowan-Houte incorcporated
-    void effacerTerm(){print(EFFACER_TERM);}
 
     void algorithm(){
-        
-        String input = "";
-        do{    
-        input = menuPrincipalChoix();
+        //affichage au lancement du programme
+        print(EFFACER_TERM);
+        afficherTxt("txt/titre.txt");
+        println("VERSION BETA 0.2\n");
+        //choix de la sauvegarde;
+        String input = choisirSauvegarde();
 
         if(equals(input,"1")){
             if(!equals(choisirSauvegarde(),"0")){
                 jeu();
             }
         }
-        }while(!equals(input,"0"));
+        while(!equals(input,"0"));
     }
 
     void jeu(){
@@ -57,12 +58,18 @@ class Main extends Program {
                 ouvrirSac();
 
             }else if(equals(input,"2")){//Aller à l'académie
+<<<<<<< HEAD
                 //allerAcademie();
+=======
+                parcourirAcademie();
+                
+>>>>>>> a1c82d9b4eea99d6d0c76cd5f8d588d199b58f1e
 
             }else if(equals(input,"3")){
                 parcourirDonjon(1);
 
             }
+
         }
     }
     
@@ -70,6 +77,14 @@ class Main extends Program {
         joueurActuel = sauvegardes[numSauvegarde];
         positionJoueur = "Main Menu";
 
+    }
+
+    void afficherMessageDeplacement(){
+        println("Que voulez vous faire ?\n");
+        println("0: Quitter le Jeu");
+        println("1: Ouvrir le sac à dos");
+        println("2: Aller à l'académie");
+        println("3: Aller dans le donjon");
     }
 
     void afficherTxt(String file){
@@ -210,18 +225,6 @@ class Main extends Program {
         return input;
     }
 
-    void creerSauvegarde(){
-        //à Completer
-    }
-
-    void copierSauvegarde(){
-        //à Completer
-    }
-
-    void effacerSauvegarde(){
-        //à Completer
-    }
-
     //-----------------/Fonctions de print\----------------//
     void afficherSauvegarde(int numSauvegarde){
         println(toString(sauvegardes[numSauvegarde]));
@@ -308,12 +311,15 @@ class Main extends Program {
         j.level = level;j.xp = xp;
         j.gold=gold;j.pvMax = 3;
         j.pv = pv;
-        j.livre = new Verbe[MAX_VERBES];
+        j.livre = new Verbe[3];
+        for(int i=0; i<3; i++){
+            j.livre[i] = TOUS_VERBES[i];
+        }
         j.inventaire = new Item[MAX_OBJETS];
         return j;
     }
     Verbe nouvVerbe(int id, String fr, String bv, String pr, String pp, int level){
-        /*InitialisgetRowsation du verbe*/Verbe v = new Verbe();
+        /*Initialisation du verbe*/Verbe v = new Verbe();
         v.id=id;
         v.fr=fr;
         v.bv=bv;
@@ -503,7 +509,73 @@ class Main extends Program {
     
 
     //-----------------------------------------------------//
+    
+    //---------------/Fonctions de l'Académie\-----------------//
 
+    void parcourirAcademie(){
+        println("Bienvenue à l'Académie de Magie !\nQue voulez vous faire ?\n");
+        println("0: Retour");
+        println("1: Aller en cours");
+        println("2: Aller au RU (magique)");
+        String input = lireEntree();
+        if(equals(input,"1")){
+            println("Bienvenue en cours ! Ici vous pouvez acheter des verbes pour votre grimoire.\n");
+            println("0: Retour");
+            println("1: Acheter un verbe");
+        String input2 = lireEntree();
+            if(equals(input2,"1")){
+                achatVerbe(verbesDisponibles(joueurActuel));
+            }else if(equals(input2,"0")){   
+        }else if(equals(input,"2")){
+            println("Bienvenue au RU ! Ici vous pouvez acheter des items magiques pour votre inventaire.\n");
+            //Fonction d'achat d'item
+        }else if(equals(input,"0")){
+            return;
+        }else{
+            println("Je ne suis pas sûr de bien comprendre ce que tu veux aventurier...");
+        }
+    }
+    }
+    Verbe[] verbesDisponibles(Joueur j){
+        //compter les verbes non possédés
+        Verbe[] temp = new Verbe[length(TOUS_VERBES)];
+        int count = 0;
+        for(int i=0; i<length(TOUS_VERBES); i++){
+            boolean trouve = false;
+            for(int k=0; k<length(j.livre); k++){
+                if(TOUS_VERBES[i].id == j.livre[k].id){
+                    trouve = true;
+                }
+            }
+            if(!trouve){
+                temp[count] = TOUS_VERBES[i];
+                count += 1;
+            }
+        }
+        //copier les verbes valides dans le tableau résultat de taille exacte
+        Verbe[] result = new Verbe[count];
+        for(int i=0; i<count; i++){
+            result[i] = temp[i];
+        }
+        return result;
+    }
+
+    void achatVerbe(Verbe[] dispo){
+        if(length(dispo) == 0){
+            println("Il n'y a aucun verbe disponible à l'achat pour le moment.");
+            return;
+        }
+        Verbe choisi = dispo[random(0, length(dispo)-1)];
+        // Ajouter le verbe à la fin du livre du joueur (redimensionnement du tableau)
+        int oldSize = length(joueurActuel.livre);
+        Verbe[] newLivre = new Verbe[oldSize + 1];
+        for(int i=0; i<oldSize; i++){
+            newLivre[i] = joueurActuel.livre[i];
+        }
+        newLivre[oldSize] = choisi;
+        joueurActuel.livre = newLivre;
+        println("Vous avez appris le verbe "+affichageReduit(choisi)+" !");
+    }
     //---------------/Fonctions de Donjon\-----------------//
 
     void parcourirDonjon(int niveau){
@@ -740,8 +812,5 @@ class Main extends Program {
     String toString(Monstre m)  {return "PvMax: "+m.pvMax+" Pv: "+m.pv +" Couleur: "+m.color+" "+COULEURS[m.color]+" xpGiven: "+m.xpGiven+" goldGiven: "+m.goldGiven+" VERBE: "+toString(m.verbe);}
     String toString(Monstre[] f){String res="";for(int i=0;i<length(f);i++){res+=toString(f[i])+";\n";}return res;}
     String toString(Item i)     {return "ID: "+i.id+" Nom: "+i.nom+" Description: "+i.description;}
-    String toString(Item[] inv) {String result="";for(int i=0;i<length(inv);i++){result+=toString(inv[i])+";\n";}return result;}
-
-    
-    
+    String toString(Item[] inv) {String result="";for(int i=0;i<length(inv);i++){result+=toString(inv[i])+";\n";}return result;} 
 }   
