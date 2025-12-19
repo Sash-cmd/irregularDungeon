@@ -22,51 +22,44 @@ class Main extends Program {
     // au final on part peut etre sur un boolean est en combat car c'est le seul utile.
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
     final String EFFACER_TERM = "\033[H\033[2J"; //Propriété de Lowan-Houte incorcporated
+    void effacerTerm(){print(EFFACER_TERM);}
 
     void algorithm(){
-        //affichage au lancement du programme
-        print(EFFACER_TERM);
-        afficherTxt("txt.txt");
-        println("VERSION BETA 0.2\n");
-        //choix de la sauvegarde;
-        String input = choisirSauvegarde();
+        String input = "";
+        do{
+            
+        input = menuPrincipalChoix();
+        if(equals(input,"1")){
+            choisirSauvegarde();
+            while(!equals(input,"0")){//Boucle du jeu
 
-        while(!equals(input,"0")){//Boucle du jeu
+                afficherMessageDeplacement();
 
-            afficherMessageDeplacement();
+                println("\n"+affichageReduit(joueurActuel));
+                input = lireEntree();
 
-            println("\n"+affichageReduit(joueurActuel));
-            input = lireEntree();
+                if(equals(input, "1")){//Ouvrir le sac à dos
+                    println(affichageReduit(joueurActuel.inventaire));
+                    println("Appuyez sur entrer pour continuer");
+                    readString();
 
-            if(equals(input, "1")){//Ouvrir le sac à dos
-                println(affichageReduit(joueurActuel.inventaire));
-                println("Appuyez sur entrer pour continuer");
-                readString();
+                }else if(equals(input,"2")){//Aller à l'académie
+                    afficherGrimoire();
 
-            }else if(equals(input,"2")){//Aller à l'académie
-                afficherGrimoire();
-                
 
-            }else if(equals(input,"3")){
-                parcourirDonjon(1);
+                }else if(equals(input,"3")){
+                    parcourirDonjon(1);
 
+                }
             }
-
         }
+        }while(!equals(input,"0"));
     }
     
     void initJeu(int numSauvegarde){
         joueurActuel = sauvegardes[numSauvegarde];
         positionJoueur = "Main Menu";
 
-    }
-
-    void afficherMessageDeplacement(){
-        println("Que voulez vous faire ?\n");
-        println("0: Quitter le Jeu");
-        println("1: Ouvrir le sac à dos");
-        println("2: Aller à l'académie");
-        println("3: Aller dans le donjon");
     }
 
     void afficherTxt(String file){
@@ -95,6 +88,53 @@ class Main extends Program {
         assertEquals("abc",lireEntree("a b\n C"));
         assertEquals("123",lireEntree("1 2 3"));
     }
+
+
+    //--------------/Fonctions de Deplacement\-------------//
+
+    String menuPrincipalChoix(){ //"0"=> quitter le jeu ; "2"||"3"||"4"=>action puis retour menu ; "1"=> continuers
+        effacerTerm();
+        afficherTxt("txt/titre.txt");
+        println("VERSION BETA 0.3\n");
+        afficherMessageChoixSurSauvegardes();
+        String input = lireEntree();
+
+        if      (equals(input,"0")){//Quitter le jeu
+            println("Merci d'avoir Joué !");
+
+        }else if(equals(input,"2")){//Choisir parmis les sauvegardes vides et créer une sauvegarde
+            creerSauvegarde();
+        
+        }else if(equals(input,"3")){//Copier une sauvegarde dans une autre Sauvegarde
+            copierSauvegarde();
+
+        }else if(equals(input,"4")){//Effacer une sauvegarde
+            effacerSauvegarde();
+
+        }
+        return input;
+    }
+
+    void afficherMessageChoixSurSauvegardes(){
+        println("Que voulez vous faire ?\n");
+        println("0: Quitter le Jeu");
+        println("1: Choisir une sauvegarde");
+        println("2: Créer une Sauvegarde");
+        println("3: Copier une Sauvegarde");
+        println("4: Effacer une sauvegarde");
+    }
+
+    void afficherMessageDeplacement(){
+        effacerTerm();
+        println("Que voulez vous faire ?\n");
+        println("0: Quitter la partie");
+        println("1: Ouvrir le sac à dos");
+        println("2: Aller à l'académie");
+        println("3: Aller dans le donjon");
+    }
+
+
+    //-----------------------------------------------------// 
 
     //---------------/Fonctions de toString\---------------//    
     String affichageReduit(Joueur j){
@@ -150,6 +190,18 @@ class Main extends Program {
         }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
         initJeu(stringVersInt(input));
         return input;
+    }
+
+    void creerSauvegarde(){
+        //à Completer
+    }
+
+    void copierSauvegarde(){
+        //à Completer
+    }
+
+    void effacerSauvegarde(){
+        //à Completer
     }
 
     //-----------------/Fonctions de print\----------------//
