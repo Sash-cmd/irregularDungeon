@@ -25,35 +25,40 @@ class Main extends Program {
     void effacerTerm(){print(EFFACER_TERM);}
 
     void algorithm(){
+        
         String input = "";
-        do{
-            
+        do{    
         input = menuPrincipalChoix();
+
         if(equals(input,"1")){
             choisirSauvegarde();
-            while(!equals(input,"0")){//Boucle du jeu
-
-                afficherMessageDeplacement();
-
-                println("\n"+affichageReduit(joueurActuel));
-                input = lireEntree();
-
-                if(equals(input, "1")){//Ouvrir le sac à dos
-                    println(affichageReduit(joueurActuel.inventaire));
-                    println("Appuyez sur entrer pour continuer");
-                    readString();
-
-                }else if(equals(input,"2")){//Aller à l'académie
-                    afficherGrimoire();
-
-
-                }else if(equals(input,"3")){
-                    parcourirDonjon(1);
-
-                }
-            }
+            jeu();            
         }
         }while(!equals(input,"0"));
+    }
+
+    void jeu(){
+        String input = "";
+        while(!equals(input,"0")){//Boucle du jeu
+
+            afficherMessageDeplacement();
+
+            println("\n"+affichageReduit(joueurActuel));
+            input = lireEntree();
+
+            if(equals(input, "1")){//Ouvrir le sac à dos
+                println(affichageReduit(joueurActuel.inventaire));
+                println("Appuyez sur entrer pour continuer");
+                readString();
+
+            }else if(equals(input,"2")){//Aller à l'académie
+                afficherGrimoire();
+
+            }else if(equals(input,"3")){
+                parcourirDonjon(1);
+
+            }
+        }
     }
     
     void initJeu(int numSauvegarde){
@@ -121,7 +126,7 @@ class Main extends Program {
         println("1: Choisir une sauvegarde");
         println("2: Créer une Sauvegarde");
         println("3: Copier une Sauvegarde");
-        println("4: Effacer une sauvegarde");
+        println("4: Effacer une sauvegarde\n");
     }
 
     void afficherMessageDeplacement(){
@@ -130,7 +135,7 @@ class Main extends Program {
         println("0: Quitter la partie");
         println("1: Ouvrir le sac à dos");
         println("2: Aller à l'académie");
-        println("3: Aller dans le donjon");
+        println("3: Aller dans le donjon\n");
     }
 
 
