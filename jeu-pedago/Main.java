@@ -19,6 +19,12 @@ class Main extends Program {
     Joueur[] sauvegardes = lireSauvegardes("sauvegardes.csv");
     Joueur joueurActuel;
 
+    final int XP_REQUIS_1 = 1000;
+    final int XP_REQUIS_2 = 2000;    
+    final int XP_REQUIS_3 = 3000;
+
+    final int PRIX_VERBE = 50;
+
     // au final on part peut etre sur un boolean est en combat car c'est le seul utile.
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
     final String EFFACER_TERM = "\033[H\033[2J"; //Propriété de Lowan-Houte incorcporated
@@ -51,7 +57,7 @@ class Main extends Program {
                 ouvrirSac();
 
             }else if(equals(input,"2")){//Aller à l'académie
-                afficherGrimoire();
+                //allerAcademie();
 
             }else if(equals(input,"3")){
                 parcourirDonjon(1);
@@ -136,6 +142,14 @@ class Main extends Program {
         println("3: Aller dans le donjon\n");
     }
 
+    void afficherMessageAcademie(){
+        effacerTerm();
+        println("\nQue voulez vous faire ?\n");
+        println("0: Revenir en arrière");
+        println("1: Aller en cours de sortilèges ("+PRIX_VERBE+" gold)");
+        println("2: Aller à la boutique d'objets");
+        println("3: Ouvrir le sac à dos\n");
+    }
 
     //-----------------------------------------------------// 
 
@@ -217,6 +231,12 @@ class Main extends Program {
         afficherTxt("txt/titre.txt");
         println("VERSION BETA 0.3\n");
     }
+    void afficherMessagePasArgent(){
+        println("\nMince, il vous manque du gold !");
+        println("Revenez quand vous serez, mmm...... plus riche!\n");
+        println("Appuyez sur entrer pour continuer");
+        lireEntree();
+    }
 
     //-----------------------------------------------------//
 
@@ -258,8 +278,17 @@ class Main extends Program {
         println("Appuyez sur entrer pour continuer");
         readString();
     }
+    //-----------------------------------------------------//
+    
+    //---------------------/Académie\----------------------//
+
+    void allerEnCours(){
+        //à remplir
+    }
 
     //-----------------------------------------------------//
+
+    //---------------------/Tutoriel\----------------------//
 
     void afficherTutoriel(){
         println("Bienvenue dans Irregular Dungeon ! \n\n"+
@@ -565,6 +594,17 @@ class Main extends Program {
         if(joueurActuel.pv < joueurActuel.pvMax){
             joueurActuel.pv += 1;
         }
+    }
+    void gainXP(int xpGagne){
+        joueurActuel.xp += xpGagne;
+        if(joueurActuel.level == 1 && joueurActuel.xp >= XP_REQUIS_1){joueurActuel.xp -= XP_REQUIS_1;gainNiveau();}
+        if(joueurActuel.level == 2 && joueurActuel.xp >= XP_REQUIS_2){joueurActuel.xp -= XP_REQUIS_2;gainNiveau();}
+        if(joueurActuel.level == 3 && joueurActuel.xp >= XP_REQUIS_3){joueurActuel.xp -= XP_REQUIS_3;gainNiveau();}
+
+    }
+    void gainNiveau(){
+        println("\nVous avez gagné un niveau !!!");
+        joueurActuel.level += 1;
     }
     //-----------------------------------------------------//
 
