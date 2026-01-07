@@ -342,10 +342,11 @@ class Main extends Program {
     //---------------/Fonctions de l'Académie\-----------------//
 
     void parcourirAcademie(){
+        affichageArt(lectureArt("txt/academie.txt"));
         String input = "";
         do{
         effacerTerm();
-        println("Bienvenue à l'Académie de Magie !\nQue voulez vous faire ?\n");
+        ecrireLent("Bienvenue à l'Académie de Magie !\nQue voulez vous faire ?\n",40);
         println("0: Retour");
         println("1: Aller en cours");
         println("2: Aller au RU (magique)");
@@ -442,12 +443,12 @@ class Main extends Program {
     //---------------------/Tutoriel\----------------------//
 
     void afficherTutoriel(){
-        println("Bienvenue dans Irregular Dungeon ! \n\n"+
+        ecrireLent("Bienvenue dans Irregular Dungeon ! \n\n"+
                 "Dans ce monde, vous devez vous battre contre des monstre, mais avec des verbes irréguliers en anglais !\n"+
                 "Il y a plusieurs types de monstre: les monstres rouges vous nécéssiterat de rentrer uniquement la base verbale du verbe pour le battre,\n"+
                 "tandis que les verts, eux, vous demanderons le prétérit, et enfin les bleus vous demanderons de donner le participe passé du verbe.\n"+
                 "Il y a à votre disposition une académie de magie dans laquelle vous pourrez acheter des verbes pour progresser,\n"+
-                "mais aussi des Items pour vous aider !\n");
+                "mais aussi des Items pour vous aider !\n", 250);
     }
 
     //-----------------------------------------------------//
@@ -501,7 +502,23 @@ class Main extends Program {
     
     //Fonction pour transformer le csv en plusieurs Tableaux de verbes selon les differents niveaux
 
+    //Fonctions servant à l'écriture lente (délai d'apparition des lettres)
+    int temps(int vitesse){
+        return 1000-vitesse;
+    }
+    void sleep(int temps){
+        long get = getTime();
+        while(getTime()-get<temps){ 
+        }
+    }
     //Fonction d'ériture pour avoir les caractères print les uns après les autres comme dans un RPG
+    void ecrireLent(String chaine, int vitesse){
+        for(int i = 0; i<length(chaine); i++){
+            print(charAt(chaine, i));
+            sleep(vitesse);
+        }
+
+    }
 
     //------------------/Fonctions d'items\----------------//
     
@@ -677,7 +694,7 @@ class Main extends Program {
             }
         }
         if(!alive){
-            println("Aie ! vous avez perdu !, vous vous soignez et vous remetez en route...\n");
+            println("Aie ! vous avez perdu !, vous vous soignez et vous remettez en route...\n");
             joueurActuel.pv = joueurActuel.pvMax;
         }else{
             println("Bien joué, vous avez triomphé(e) du Donjon !\nMerci d'avoir joué à l'alpha\n");
@@ -901,8 +918,23 @@ class Main extends Program {
 
     //Fonction lecture de Sprites + stockage dans un string
 
+    String lectureArt(String chaine){
+        File f=newFile(chaine);
+        String retour = "";
+        while(ready(f)){
+            retour += readLine(f) + "\n";
+        }
+        return retour;
+
+    }    
     //Fonction d'affichage de Sprites
-    
+
+    void affichageArt(String chaine){
+        for(int i=0;i<length(chaine);i++){
+            print(charAt(chaine,i));
+        }
+    }
+
     //-----------------/Fonctions de Debug\----------------//
     String toString(String[] s) {String result = "";for(int i=0;i<length(s);i++){result += s[i]+"; ";}result += "\n";return result;}
     String toString(Verbe v)    {return "ID: "+v.id +" "+v.fr +" "+ v.bv +" "+ v.pr +" "+ v.pp +" lv"+ v.level;}
