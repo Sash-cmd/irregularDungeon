@@ -816,7 +816,7 @@ class Main extends Program {
         }
         return livre;
     }
-    //Fonctionpour avoir le tableau de verbe d'un joueur a partir de son csv
+    //Fonction pour avoir le tableau de verbe d'un joueur a partir de son csv
     Verbe[] nouvLivre(CSVFile save, int ligne){
         String livreString = getCell(save,ligne,5);
         int[] nombres = stringVersTab(livreString);
@@ -840,22 +840,34 @@ class Main extends Program {
     void test_stringVersInt(){
         assertTrue(123 == stringVersInt("123"));
     }
-    //Fonction "0102102500" => [1, 2, 10, 25, 0]
-    int[] stringVersTab(String numbers){
-        int[] n = new int[length(numbers)/2];
-        for(int i = 0; i<length(n); i++){
-            n[i] = 10*(charAt(numbers, i*2)-'0')+(charAt(numbers, i*2+1)-'0');
-        }
-        return n;
-    }
-    void test_stringVersTab(){
-        int[] n = new int[]{1,2,10,25};
-        int[] m = stringVersTab("01021025"); 
-        assertEquals(n[0], m[0]);
-        assertEquals(n[1], m[1]);
-        assertEquals(n[2], m[2]);
-        assertEquals(n[3], m[3]);
-    }
+//    //Fonction "0102102500" => [1, 2, 10, 25, 0]
+//    int[] stringVersTab(String numbers){
+//        int[] resultat = new int[length(numbers)];
+//        for(int i=0; i<length(numbers);i++){
+//            int indiceNouvTab = 0;
+//            if(charAt(numbers,i)=='-'){
+//                indiceNouvTab += 1;
+//            }else{
+//                println(resultat[indiceNouvTab]);
+//                resultat[indiceNouvTab] = resultat[indiceNouvTab]*10 + charAt(numbers,i);
+//            }            
+//        }
+//        return resultat;
+//
+//        //int[] n = new int[length(numbers)/2];
+//        //for(int i = 0; i<length(n); i++){
+//        //    n[i] = 10*(charAt(numbers, i*2)-'0')+(charAt(numbers, i*2+1)-'0');
+//        //}
+//        //return n;
+//    }
+//    void test_stringVersTab(){
+//        int[] n = new int[]{1,2,10,25};
+//        int[] m = stringVersTab("01021025"); 
+//        assertEquals(n[0], m[0]);
+//        assertEquals(n[1], m[1]);
+//        assertEquals(n[2], m[2]);
+//        assertEquals(n[3], m[3]);
+//    }
 
     Item[] tousObjets(String file){
         CSVFile f = loadCSV("csv/"+file);
