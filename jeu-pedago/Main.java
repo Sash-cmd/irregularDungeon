@@ -681,11 +681,6 @@ class Main extends Program {
                     }
                 }else if(equals(input,"1")){
                     afficherInventaire();
-                    println("Entrez le numéro de l'objet à utiliser, ou 0 pour revenir en arrière.");
-                    String input2 = lireEntree();
-                    int choixItem = stringVersInt(input2);
-                    utilisationObjet(joueurActuel.inventaire[choixItem-1]);
-                    }
                     }
             }while(!equals(input,"0") && !equals(input,"1"));  
         }
