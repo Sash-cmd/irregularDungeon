@@ -196,9 +196,9 @@ class Main extends Program {
     }
 
     String affichageReduit(Item[] inv){
-        String res = "Voici le contenu de votre inventaire :\n\n";
+        String res = "";
         for(int i = 0;i<length(inv);i++){
-            res += i+1 + ") " + inv[i].nom + "\n";
+            res += i+1 + ": " + inv[i].nom + "\n";
         }
         return res;
     }
@@ -388,9 +388,38 @@ class Main extends Program {
     }
 
     void afficherInventaire(){
-        println(EFFACER_TERM+affichageReduit(joueurActuel.inventaire));
+        String input = "0";
+        do{
+            println(EFFACER_TERM+"Quel objet voulez vous selectioner ?\n\n0: Quitter\n"+affichageReduit(joueurActuel.inventaire));
+            input = lireEntree();
+            if(length(input)<=0){input = "69";}else{
+            if(0<charAt(input,0)-'0' && charAt(input,0)-'0' < 5){
+                selectionItem(joueurActuel.inventaire[charAt(input,0)-'0']);
+            }
+            }
+        }while(charAt(input,0)-'0'!=0);
         println("Appuyez sur entrer pour continuer");
-        readString();
+        lireEntree();
+    }
+    void selectionItem(Item i){
+        println(CYAN+i.nom+RESET+" : "+i.description+"\nVoulez vous l'utiliser ?\n\n0: non\n1: oui");
+        String input = lireEntree();
+        if(equals(input,"0")){}
+        if(equals(input,"1")){
+            if(i.id == 1){
+                soinsJoueur();
+                println("Vous vous soignez de 1 pv !");
+                lireEntree();
+            }else if(i.id == 2){
+                soinsJoueur();
+                soinsJoueur();
+                soinsJoueur();
+                println("Vous vous soignez de tout vos pv !");
+                lireEntree();
+            }else{selectionItem(i);}
+        }
+
+
     }
     //-----------------------------------------------------//
     
@@ -758,8 +787,10 @@ class Main extends Program {
         if(!alive){
             println("Aie ! vous avez perdu !, vous vous soignez et vous remettez en route...\n");
             joueurActuel.pv = joueurActuel.pvMax;
+            lireEntree();
         }else{
             println("Bien joué, vous avez triomphé(e) du Donjon !\nMerci d'avoir joué à l'alpha\n");
+            lireEntree();
         }
     }
 
