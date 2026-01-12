@@ -55,7 +55,7 @@ class Main extends Program {
 
             afficherMessageDeplacement();
 
-            println("\n"+affichageReduit(joueurActuel)+" "+RED+affichagePv(joueurActuel.pv,joueurActuel.pvMax)+RESET);
+            println("\n"+affichageReduit(joueurActuel)+" "+GREEN+affichagePv(joueurActuel.pv,joueurActuel.pvMax)+RESET);
             input = lireEntree();
 
             if(equals(input, "1")){//Ouvrir le sac à dos
@@ -695,6 +695,12 @@ class Main extends Program {
             return true;
         }
     }
+
+    boolean combatBoss(){
+        ecrireLent("Vous faites face à ",fast);
+        return true;
+    }
+
     boolean[] motsVisibles(int color){
         boolean[] affiche = new boolean[]{true, true, true, true};
         if(color == 0){affiche[0] = false;}
@@ -709,7 +715,7 @@ class Main extends Program {
         if(affiche[2]){print(v.pr+" ; ");}else{print(" ______ ; ");}
         if(affiche[3]){println(v.pp);}else{println(" ______");}
         println("\nQuel est le verbe manquant ?");
-        println("\n"+affichageReduit(joueurActuel)+" "+RED+affichagePv(joueurActuel.pv,joueurActuel.pvMax)+RESET);
+        println("\n"+affichageReduit(joueurActuel)+" "+GREEN+affichagePv(joueurActuel.pv,joueurActuel.pvMax)+RESET);
 
     }
 
