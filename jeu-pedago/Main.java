@@ -799,6 +799,8 @@ class Main extends Program {
 
     //-----------------/Fonctions de CSV\------------------//
 
+
+
     //Fonctions pour lire le fichier de sauvegarde csv
     Joueur[] lireSauvegardes(String fichier){
         CSVFile f = loadCSV("csv/"+fichier);
@@ -856,18 +858,37 @@ class Main extends Program {
     }
     void test_stringVersInt(){
         assertTrue(123 == stringVersInt("123"));
+        assertTrue(12345 == stringVersInt("12345"));
     }
-    //Fonction "0102102500" => [1, 2, 10, 25, 0]
-    int[] stringVersTab(String numbers){
-        int[] n = new int[length(numbers)/2];
-        for(int i = 0; i<length(n); i++){
-            n[i] = 10*(charAt(numbers, i*2)-'0')+(charAt(numbers, i*2+1)-'0');
+
+    int[] tronquer(int[] tab, int indice){
+        int[] resultat = new int[indice];
+        for(int i=0;i<length(resultat);i++){
+            resultat[i] = tab[i];
         }
-        return n;
+        return resultat;
+    }
+
+    //Fonction "1-02-10-25-0" => [1, 2, 10, 25, 0]
+    int[] stringVersTab(String numbers){
+        int[] n = new int[length(numbers)];
+        int num = 0;
+        int indice = 0;
+        for(int i=0;i<length(numbers);i++){
+            if(charAt(numbers,i)!='-'){
+                num = num*10 + charAt(numbers,i)-'0';
+            }else{
+                n[indice] = num;
+                indice += 1;
+                num=0;
+            }
+        }
+        int[] result = tronquer(n,indice);
+        return result;
     }
     void test_stringVersTab(){
         int[] n = new int[]{1,2,10,25};
-        int[] m = stringVersTab("01021025"); 
+        int[] m = stringVersTab("1-02-10-25-"); 
         assertEquals(n[0], m[0]);
         assertEquals(n[1], m[1]);
         assertEquals(n[2], m[2]);
