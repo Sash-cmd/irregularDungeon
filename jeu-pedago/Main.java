@@ -418,6 +418,7 @@ class Main extends Program {
             }  
             }else if(equals(input,"2")){
             ecrireLent("Bienvenue au RU ! Ici vous pouvez acheter des items magiques pour votre inventaire.\n",medium);
+            affichageArt(lectureArt("txt/magicien.txt"));
             achatItem();
             }else if(equals(input,"0")){
             return;
@@ -661,16 +662,32 @@ class Main extends Program {
 
     boolean combatMonstre(Monstre m){
         ecrireLent("Un monstre se dresse devant vous !\n",medium);
+        String choix = choixMonstre();
         while(m.pv > 0 && joueurActuel.pv > 0){
             println(affichageCombat(m)+" "+RED+affichagePv(m.pv,m.pvMax)+RESET);
-            if(!demanderQuestion(m.verbe, m.color)){
-                //mauvaise réponse
-                degatsJoueur();
-            }else{
-                //bonne réponse
-                degatsMonstre(m, 40 + random(1,5));
-                changerVerbe(m,1);
-            }
+            affichageArt(lectureArt(choix));
+            String input="";
+            do{
+                println("0: Attaquer\n1: Utiliser un objet\n");
+                input = lireEntree();
+                if(equals(input,"0")){
+                    if(!demanderQuestion(m.verbe, m.color)){
+                    //mauvaise réponse
+                    degatsJoueur();
+                    }else{
+                    //bonne réponse
+                    degatsMonstre(m, 40 + random(1,5));
+                    changerVerbe(m,1);
+                    }
+                }else if(equals(input,"1")){
+                    afficherInventaire();
+                    println("Entrez le numéro de l'objet à utiliser, ou 0 pour revenir en arrière.");
+                    String input2 = lireEntree();
+                    int choixItem = stringVersInt(input2);
+                    utilisationObjet(joueurActuel.inventaire[choixItem-1]);
+                    }
+                    }
+            }while(!equals(input,"0") && !equals(input,"1"));  
         }
         if(joueurActuel.pv == 0){
             return false;
@@ -1004,6 +1021,11 @@ class Main extends Program {
         return retour;
 
     }    
+
+    String choixMonstre(){
+        int choix = random(1,2);
+        return "txt/monstre"+choix+".txt";
+    }
     //Fonction d'affichage de Sprites
 
     void affichageArt(String chaine){
