@@ -17,6 +17,7 @@ class Main extends Program {
     final Item OBJET_VIDE = nouvObjet(0,"Vide","Vous n'avez pas d'objet a cet endroit.");
 
     Joueur[] sauvegardes = lireSauvegardes("sauvegardes.csv");
+    final Joueur JOUEUR_VIDE = nouvJoueur("Vide",1,0,0,3);
     Joueur joueurActuel;
 
     final int XP_REQUIS_1 = 1000;
@@ -64,6 +65,12 @@ class Main extends Program {
 
             }
         }
+        afficherTitre();
+        println("Que voulez vous faire ?\n\n0: Retour\n1: Quitter et sauvegarder\nautre: Quitter sans sauvegarder");
+        input = lireEntree();
+        if(equals(input,"0")){jeu();}
+        else if(equals(input,"1")){sauvegarderEtat();}
+
     }
     
     void initJeu(int numSauvegarde){
@@ -199,25 +206,54 @@ class Main extends Program {
     void sauvegarderEtat(){
         String[][] sauvegardesTab = sauvegardesEnTab();
         saveCSV(sauvegardesTab, "csv/sauvegardes.csv");
+        sauvegardes = lireSauvegardes("sauvegardes.csv");
     }
 
     String[][] sauvegardesEnTab(){
         String[][] resultat = new String[4][7];
-        resultat[0] = nouvStringTab("Nom","level","xp","gold","pv","listeVerbeForme\"00\"","listeItemForme\"0000\"(0=rien,1=fiole,ect)");
+        resultat[0] = nouvStringTab("Nom","level","xp","gold","pv","listeVerbeForme\"0-1-12-\"","listeItemForme\"0000\"(0=rien,1=fiole,ect)");
         for(int i=1; i<4; i++){
-            resultat[i][0] = sauvegardes[i].nom;
+            resultat[i][0] = ""+sauvegardes[i].nom;
             resultat[i][1] = ""+sauvegardes[i].level;
             resultat[i][2] = ""+sauvegardes[i].xp;
             resultat[i][3] = ""+sauvegardes[i].gold;
             resultat[i][4] = ""+sauvegardes[i].pv;
+            resultat[i][5] = listeVersString(sauvegardes[i].livre);
+            resultat[i][6] = listeVersString(sauvegardes[i].inventaire);
+        }
+
+        return resultat;
+    }
+
+    String listeVersString(Verbe[] tab){
+        String resultat = "";
+        for(int i=0;i<length(tab);i++){
+            resultat += ""+tab[i].id+"-";
         }
         return resultat;
+    }
+    void test_listeVersString_Verbe(){
+        Verbe[] v = new Verbe[]{nouvVerbe(1,"a","b","c","d",1),nouvVerbe(2,"a","b","c","d",1),nouvVerbe(38,"a","b","c","d",1)};
+        assertEquals(listeVersString(v),"1-2-38-");
+    }
+
+    String listeVersString(Item[] tab){
+        String resultat ="";
+        for(int i=0; i<length(tab); i++){
+            resultat += ""+tab[i].id;
+        }
+        return resultat;
+    }
+    void test_listeVersString_Item(){
+        Item[] v = new Item[]{nouvObjet(1,"a","b"),nouvObjet(1,"a","b"),nouvObjet(2,"a","b"),nouvObjet(0,"a","b")};
+        assertEquals(listeVersString(v),"1120");
     }
 
     String[] nouvStringTab(String elem1,String elem2,String elem3,String elem4,String elem5,String elem6,String elem7){
         String[] tab = new String[]{elem1,elem2,elem3,elem4,elem5,elem6,elem7};
         return tab;
     }
+
 
     String choisirSauvegarde(){
         //choix de la sauvegarde.
@@ -259,19 +295,38 @@ class Main extends Program {
             }}
         }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
         sauvegardes[stringVersInt(input)] = creationJoueur();
-        //sauvegarderEtat();
+        sauvegarderEtat();
     }
 
     void copierSauvegarde(){
-        println("Pas disponible pendant l'alpha");
-        println("appuyez sur entrer pour continuer");
-        readString();
+        //String input;
+        //do{
+        //    afficherTitre();
+        //    println("Quelle sauvergarde voulez vous copier ?\n\n0: Retour\n");
+        //    println(affichageReduit(sauvegardes));
+        //    input = lireEntree();
+        //    if(length(input)==0){}else{
+        //    if(equals(input,"0")){return;}
+        //    
+        //    }
+        //}while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
+        //sauvegarderEtat();
     }
 
     void effacerSauvegarde(){
-        println("Pas disponible pendant l'alpha");
-        println("appuyez sur entrer pour continuer");
-        readString();
+        String input;
+        do{
+            afficherTitre();
+            println("Quelle sauvergarde voulez vous effacer ?\n\n0: Retour\n");
+            println(affichageReduit(sauvegardes));
+            input = lireEntree();
+            if(length(input)==0){}else{
+            if(equals(input,"0")){return;}       
+            }
+        }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
+        int effacer = charAt(input,0)-'0';
+        sauvegardes[effacer] = JOUEUR_VIDE;  
+        sauvegarderEtat();
     }
 
     Joueur creationJoueur(){
