@@ -317,7 +317,7 @@ class Main extends Program {
         String input;
         do{
             afficherTitre();
-            println("Quelle sauvergarde voulez vous effacer ?\n\n0: Retour\n");
+            println("Quelle sauvegarde voulez vous effacer ?\n\n0: Retour\n");
             println(affichageReduit(sauvegardes));
             input = lireEntree();
             if(length(input)==0){}else{
@@ -397,7 +397,6 @@ class Main extends Program {
     //---------------/Fonctions de l'Académie\-----------------//
 
     void parcourirAcademie(){
-        affichageArt(lectureArt("txt/academie.txt"));
         String input = "";
         do{
         effacerTerm();
@@ -405,9 +404,10 @@ class Main extends Program {
         println("0: Retour");
         println("1: Aller en cours");
         println("2: Aller au RU (magique)");
+        affichageArt(lectureArt("txt/academie.txt"));
         input = lireEntree();
         if(equals(input,"1")){
-            println("Bienvenue en cours ! Ici vous pouvez acheter des verbes pour votre grimoire.\n");
+            ecrireLent("Bienvenue en cours ! Ici vous pouvez acheter des verbes pour votre grimoire.\n",medium);
             println("0: Retour");
             println("1: Acheter un verbe");
             String input2 = lireEntree();
@@ -417,12 +417,12 @@ class Main extends Program {
                 return;
             }  
             }else if(equals(input,"2")){
-            println("Bienvenue au RU ! Ici vous pouvez acheter des items magiques pour votre inventaire.\n");
+            ecrireLent("Bienvenue au RU ! Ici vous pouvez acheter des items magiques pour votre inventaire.\n",medium);
             achatItem();
             }else if(equals(input,"0")){
             return;
             }else{
-            println("Je ne suis pas sûr de bien comprendre ce que tu veux aventurier...");
+            ecrireLent("Je ne suis pas sûr de bien comprendre ce que tu veux aventurier...",medium);
             }
         }
         while(!equals(input,"0"));
@@ -660,9 +660,9 @@ class Main extends Program {
     //-----------------/Fonctions de combat\---------------//
 
     boolean combatMonstre(Monstre m){
-        println("Un monstre se dresse devant vous !\n");
+        ecrireLent("Un monstre se dresse devant vous !\n",medium);
         while(m.pv > 0 && joueurActuel.pv > 0){
-            println(affichageCombat(m));
+            println(affichageCombat(m)+" "+RED+affichagePv(m.pv,m.pvMax)+RESET);
             if(!demanderQuestion(m.verbe, m.color)){
                 //mauvaise réponse
                 degatsJoueur();
@@ -692,7 +692,7 @@ class Main extends Program {
         if(affiche[2]){print(v.pr+" ; ");}else{print(" ______ ; ");}
         if(affiche[3]){println(v.pp);}else{println(" ______");}
         println("\nQuel est le verbe manquant ?");
-        println("\n"+affichageReduit(joueurActuel));
+        println("\n"+affichageReduit(joueurActuel)+" "+RED+affichagePv(joueurActuel.pv,joueurActuel.pvMax)+RESET);
 
     }
 
