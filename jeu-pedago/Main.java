@@ -109,9 +109,10 @@ class Main extends Program {
 
     //--------------/Fonctions de Deplacement\-------------//
 
-    String menuPrincipalChoix(){ //"0"=> quitter le jeu ; "2"||"3"||"4"=>action puis retour menu ; "1"=> continuers
+    String menuPrincipalChoix(){ //"0"=> quitter le jeu ; "2"||"3"=>action puis retour menu ; "1"=> continuer
         effacerTerm();
         afficherTitre();
+        print("Sauvegardes:\n"+affichageReduit(sauvegardes)+"\n");
         afficherMessageChoixSurSauvegardes();
         String input = lireEntree();
 
@@ -120,11 +121,8 @@ class Main extends Program {
 
         }else if(equals(input,"2")){//Choisir parmis les sauvegardes vides et créer une sauvegarde
             creerSauvegarde();
-        
-        }else if(equals(input,"3")){//Copier une sauvegarde dans une autre Sauvegarde
-            copierSauvegarde();
 
-        }else if(equals(input,"4")){//Effacer une sauvegarde
+        }else if(equals(input,"3")){//Effacer une sauvegarde
             effacerSauvegarde();
 
         }
@@ -136,8 +134,7 @@ class Main extends Program {
         println("0: Quitter le Jeu");
         println("1: Choisir une sauvegarde");
         println("2: Créer une Sauvegarde");
-        println("3: Copier une Sauvegarde");
-        println("4: Effacer une sauvegarde\n");
+        println("3: Effacer une sauvegarde\n");
     }
 
     void afficherMessageDeplacement(){
@@ -296,21 +293,6 @@ class Main extends Program {
         }while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
         sauvegardes[stringVersInt(input)] = creationJoueur();
         sauvegarderEtat();
-    }
-
-    void copierSauvegarde(){
-        //String input;
-        //do{
-        //    afficherTitre();
-        //    println("Quelle sauvergarde voulez vous copier ?\n\n0: Retour\n");
-        //    println(affichageReduit(sauvegardes));
-        //    input = lireEntree();
-        //    if(length(input)==0){}else{
-        //    if(equals(input,"0")){return;}
-        //    
-        //    }
-        //}while(!equals(input,"1") && !equals(input,"2") && !equals(input,"3"));
-        //sauvegarderEtat();
     }
 
     void effacerSauvegarde(){
