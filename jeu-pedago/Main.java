@@ -55,7 +55,7 @@ class Main extends Program {
 
             afficherMessageDeplacement();
 
-            println("\n"+affichageReduit(joueurActuel));
+            println("\n"+affichageReduit(joueurActuel)+" "+RED+affichagePv(joueurActuel.pv,joueurActuel.pvMax)+RESET);
             input = lireEntree();
 
             if(equals(input, "1")){//Ouvrir le sac à dos
@@ -188,7 +188,7 @@ class Main extends Program {
         return "Niveau: "+v.level+" -"+v.fr+"\t\t--"+v.bv+"\t-"+v.pr+"\t-"+v.pp;
     }
     String affichageReduit(Verbe[] v){
-        String res = "Voici le contenu de votre grimmoire :\n\n";
+        String res = "Voici le contenu de votre grimoire :\n\n";
         for(int i = 0;i<length(v);i++){
             res += affichageReduit(v[i])+"\n";
         }
@@ -201,6 +201,17 @@ class Main extends Program {
             res += i+1 + ") " + inv[i].nom + "\n";
         }
         return res;
+    }
+    String affichagePv(int pv, int pvMax){
+        int pourcent = (pv*100)/pvMax;
+        String barre = "";
+        for(int i= 0;i<pourcent;i+=5){
+            barre+="█";
+        }
+        while(length(barre)!=20){
+            barre+="░";
+        }
+        return barre;
     }
     //-----------------------------------------------------//
 
