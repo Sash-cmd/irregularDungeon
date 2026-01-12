@@ -65,7 +65,7 @@ class Main extends Program {
                 parcourirAcademie();
 
             }else if(equals(input,"3")){
-                parcourirDonjon(1);
+                entrerDonjon();
 
             }else if(equals(input,"4")){
                 afficherTutoriel();
@@ -394,12 +394,10 @@ class Main extends Program {
             input = lireEntree();
             if(length(input)<=0){input = "69";}else{
             if(0<charAt(input,0)-'0' && charAt(input,0)-'0' < 5){
-                selectionItem(joueurActuel.inventaire[charAt(input,0)-'0']);
+                selectionItem(joueurActuel.inventaire[charAt(input,0)-'1']);
             }
             }
         }while(charAt(input,0)-'0'!=0);
-        println("Appuyez sur entrer pour continuer");
-        lireEntree();
     }
     void selectionItem(Item i){
         println(CYAN+i.nom+RESET+" : "+i.description+"\nVoulez vous l'utiliser ?\n\n0: non\n1: oui");
@@ -694,7 +692,11 @@ class Main extends Program {
         String choix = choixMonstre();
         while(m.pv > 0 && joueurActuel.pv > 0){
             println(affichageCombat(m)+" "+RED+affichagePv(m.pv,m.pvMax)+RESET);
+            if(m.color == 1){print(RED);}
+            if(m.color == 2){print(GREEN);}
+            if(m.color == 3){print(BLUE);}
             affichageArt(lectureArt(choix));
+            print(RESET);
             String input="";
             do{
                 println("0: Attaquer\n1: Utiliser un objet\n");
@@ -783,6 +785,18 @@ class Main extends Program {
 
     //---------------/Fonctions de Donjon\-----------------//
 
+    void entrerDonjon(){
+        do{
+            ecrireLent(EFFACER_TERM+"Vous êtes dans le donjon, que voulez vous faire ?\n\n0: partir\n1: aller à l'étage 1\n2: aller à l'étage 2\n"+RED+"3: Acceder au toit"+RESET));
+            input = lireEntree();
+            if(length(input)<=0){input = "69";}else{
+            if(0<charAt(input,0)-'0' && charAt(input,0)-'0' < 4){
+                parcourirDonjon(charAt(input,0)-'0');
+            }
+            }
+        }while(charAt(input,0)-'0'!=0);
+    }
+
     void parcourirDonjon(int niveau){
         Monstre[] floor = genererEtage(niveau);
         boolean alive = true;
@@ -797,11 +811,18 @@ class Main extends Program {
             }
         }
         if(!alive){
-            println("Aie ! vous avez perdu !, vous vous soignez et vous remettez en route...\n");
+            ecrireLent("Aie ! vous avez perdu !, En fuyant vous faites tomber votre argent, vous vous soignez et vous remettez en route...\n",fast);
             joueurActuel.pv = joueurActuel.pvMax;
+            joueurActuel.gold = 0;
             lireEntree();
+        }else if(niveau == 3){
+            ecrireLent("En arrivant devant Le gros boss du donjon, vous le trouvez mort, avec plein d'entailles de sorts de verbes.\n
+            On dirait que quelqu'un vous à pris de court...\n
+            \n
+            A suivre dans IrregularDungeon 2 : Electric boogaloo (comming soon)")
+            readString();
         }else{
-            println("Bien joué, vous avez triomphé(e) du Donjon !\nMerci d'avoir joué à l'alpha\n");
+            ecrireLent("Bien joué, vous avez triomphé(e) de l'étage !\nen repartant, vous entendez des bruits dans le fonjon, sa disposition a l'air d'avoir changé...\n",fast);
             lireEntree();
         }
     }
@@ -816,19 +837,8 @@ class Main extends Program {
     }
 
     Monstre genererMonstre(int level){
-        if(level == 1){
-            int color = random(1,3);//trois couleurs primaires
-            return nouvMonstre(color, genererVerbe(level));
-        }else if(level == 2){
-            int color = random(0,3);//précédents + blanc
-            return nouvMonstre(color, genererVerbe(level));
-        }else if(level == 3){
-            int color = random(0,6);//précédents + couleurs secondaires
-            return nouvMonstre(color, genererVerbe(level));
-        }else{
-            int color = random(0,7);//précédents + noir (toutes les couleurs)
-            return nouvMonstre(color, genererVerbe(level));
-        }
+        int color = random(1,3);//trois couleurs primaires
+        return nouvMonstre(color, genererVerbe(level));
     }
     void test_genererMonstre(){
         initJeu(2);
