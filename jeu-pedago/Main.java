@@ -391,6 +391,7 @@ class Main extends Program {
         String input = "0";
         do{
             println(EFFACER_TERM+"Quel objet voulez vous selectioner ?\n\n0: Quitter\n"+affichageReduit(joueurActuel.inventaire));
+            println(affichageReduit(joueurActuel)+" "+GREEN+""+affichagePv(joueurActuel.pv,joueurActuel.pvMax)+RESET);
             input = lireEntree();
             if(length(input)<=0){input = "69";}else{
             if(0<charAt(input,0)-'0' && charAt(input,0)-'0' < 5){
@@ -786,8 +787,9 @@ class Main extends Program {
     //---------------/Fonctions de Donjon\-----------------//
 
     void entrerDonjon(){
+        String input="";
         do{
-            ecrireLent(EFFACER_TERM+"Vous êtes dans le donjon, que voulez vous faire ?\n\n0: partir\n1: aller à l'étage 1\n2: aller à l'étage 2\n"+RED+"3: Acceder au toit"+RESET));
+            println(EFFACER_TERM+"Vous êtes dans le donjon, que voulez vous faire ?\n\n0: partir\n1: aller à l'étage 1\n2: aller à l'étage 2\n"+RED+"3: Acceder au toit"+RESET);
             input = lireEntree();
             if(length(input)<=0){input = "69";}else{
             if(0<charAt(input,0)-'0' && charAt(input,0)-'0' < 4){
@@ -816,10 +818,7 @@ class Main extends Program {
             joueurActuel.gold = 0;
             lireEntree();
         }else if(niveau == 3){
-            ecrireLent("En arrivant devant Le gros boss du donjon, vous le trouvez mort, avec plein d'entailles de sorts de verbes.\n
-            On dirait que quelqu'un vous à pris de court...\n
-            \n
-            A suivre dans IrregularDungeon 2 : Electric boogaloo (comming soon)")
+            ecrireLent("En arrivant devant Le gros boss du donjon, vous le trouvez mort, avec plein d'entailles de sorts de verbes.\nOn dirait que quelqu'un vous à pris de court...\n\nA suivre dans IrregularDungeon 2 : Electric boogaloo (comming soon)",fast);
             readString();
         }else{
             ecrireLent("Bien joué, vous avez triomphé(e) de l'étage !\nen repartant, vous entendez des bruits dans le fonjon, sa disposition a l'air d'avoir changé...\n",fast);
