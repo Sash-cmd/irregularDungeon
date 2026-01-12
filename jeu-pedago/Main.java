@@ -26,6 +26,10 @@ class Main extends Program {
 
     final int PRIX_VERBE = 50;
 
+    final int fast = 25;
+    final int medium = 50;
+    final int slow = 100;
+
     // au final on part peut etre sur un boolean est en combat car c'est le seul utile.
     String positionJoueur = "Main Menu"; //(ptet un enum ?) positions incluent : "Main Menu", "Crossroad", "Academie", "Boutique Verbes", "Boutiques Items", "Donjon", "Couloir", "Combat", "Coffre"
     final String EFFACER_TERM = "\033[H\033[2J"; //Propriété de Lowan-Houte incorcporated
@@ -63,6 +67,8 @@ class Main extends Program {
             }else if(equals(input,"3")){
                 parcourirDonjon(1);
 
+            }else if(equals(input,"4")){
+                afficherTutoriel();
             }
         }
         afficherTitre();
@@ -144,6 +150,7 @@ class Main extends Program {
         println("1: Ouvrir le sac à dos");
         println("2: Aller à l'académie");
         println("3: Aller dans le donjon\n");
+        println("4: Consulter le tutoriel");
     }
 
     void afficherMessageAcademie(){
@@ -481,11 +488,12 @@ class Main extends Program {
 
     void afficherTutoriel(){
         ecrireLent("Bienvenue dans Irregular Dungeon ! \n\n"+
-                "Dans ce monde, vous devez vous battre contre des monstre, mais avec des verbes irréguliers en anglais !\n"+
-                "Il y a plusieurs types de monstre: les monstres rouges vous nécéssiterat de rentrer uniquement la base verbale du verbe pour le battre,\n"+
-                "tandis que les verts, eux, vous demanderons le prétérit, et enfin les bleus vous demanderons de donner le participe passé du verbe.\n"+
+                "Dans ce monde, vous devez vous battre contre des monstre, mais avec des verbes irréguliers en "+BOLD+"anglais !"+RESET+"\n"+
+                "Il y a plusieurs types de monstre: les monstres "+RED+"rouges"+RESET+" vous nécéssiteront de rentrer uniquement la "+BOLD+"base verbale"+RESET+" du verbe pour le battre,\n"+
+                "tandis que les "+GREEN+"verts"+RESET+", eux, vous demanderons le "+BOLD+"prétérit"+RESET+", et enfin les "+BLUE+"bleus"+RESET+" vous demanderons de donner le "+BOLD+"participe passé"+RESET+" du verbe.\n"+
                 "Il y a à votre disposition une académie de magie dans laquelle vous pourrez acheter des verbes pour progresser,\n"+
-                "mais aussi des Items pour vous aider !\n", 250);
+                "mais aussi des Items pour vous aider !\n",fast);
+        lireEntree();
     }
 
     //-----------------------------------------------------//
